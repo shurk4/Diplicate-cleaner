@@ -118,19 +118,28 @@ void MainWindow::on_pushButtonAnalize_clicked()
         {
             QListWidgetItem *item = new QListWidgetItem;
             item->setText(i[0].fileName());
+            files++;
             if(i.size() == 2)
             {
+                files2Dup++;
                 item->setBackground(Qt::green);
             }
             else if(i.size() == 3)
             {
+                files3Dup++;
                 item->setBackground(Qt::yellow);
             }
             else if(i.size() > 3)
             {
+                filesMoreDup++;
                 item->setBackground(Qt::red);
             }
             ui->listWidgetOrig->addItem(item);
+            ui->labelFilesNum->setText(QString::number(files));
+            ui->labelFilesWithDup->setText(QString::number(filesWithDup));
+            ui->label2Dup->setText(QString::number(files2Dup));
+            ui->label3Dup->setText(QString::number(files3Dup));
+            ui->labelMoreDup->setText(QString::number(filesMoreDup));
         }
     }
     else

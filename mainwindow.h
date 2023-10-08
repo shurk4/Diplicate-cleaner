@@ -26,6 +26,12 @@ class MainWindow : public QMainWindow
     int selectedFileId; // Выбранный файл оригинала
     int selectedDupFileId; // Выбранный файл дупликата
 
+    int files = 0;
+    int filesWithDup = 0;
+    int files2Dup = 0;
+    int files3Dup = 0;
+    int filesMoreDup = 0;
+
     void showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene);
     void clearAll();
     void clearOrig();
