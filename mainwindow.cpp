@@ -1,8 +1,20 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-// Вылетает при открытии новой папки после анализа
+// Разобраться с ресайзом
 // Добавить функцию отсеивания файлов со 100% совпадением
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    connect(&engine, &CompareEngine::currentAction, this, &MainWindow::getAction);
+    origScene = new QGraphicsScene();
+    ui->graphicsViewOrig->setScene(origScene);
+    dupScene = new QGraphicsScene();
+    ui->graphicsViewDup->setScene(dupScene);
+}
 
 MainWindow::~MainWindow()
 {
@@ -13,14 +25,21 @@ void MainWindow::clearAll()
 {
     engine.clear();
     filesList.clear();
-    ui->listWidgetDup->clear();
-    ui->listWidgetOrig->clear();
+
+    ui->textBrowserLog->clear();
+
     clearOrig();
     clearDup();
 }
 
 void MainWindow::clearOrig()
 {
+    ui->graphicsViewOrig->scene()->clear();
+
+    ui->listWidgetOrig->blockSignals(true);
+    ui->listWidgetOrig->clear();
+    ui->listWidgetOrig->blockSignals(false);
+
     ui->labelOrigChangeDate->clear();
     ui->labelOrigSaveDate->clear();
     ui->labelOrigPath->clear();
@@ -31,6 +50,12 @@ void MainWindow::clearOrig()
 
 void MainWindow::clearDup()
 {
+    ui->graphicsViewDup->scene()->clear();
+
+    ui->listWidgetDup->blockSignals(true);
+    ui->listWidgetDup->clear();
+    ui->listWidgetDup->blockSignals(false);
+
     ui->labelDupType->clear();
     ui->labelDupChangeDate->clear();
     ui->labelDupSaveDate->clear();
@@ -39,18 +64,39 @@ void MainWindow::clearDup()
     ui->labelDupSize->clear();
 }
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    ui->setupUi(this);
-    connect(&engine, &CompareEngine::currentAction, this, &MainWindow::getAction);
+    ui->graphicsViewOrig->scene()->clear();
+    showImage(ui->labelOrigPath->text(), ui->graphicsViewOrig, origScene);
+    ui->graphicsViewDup->scene()->clear();
+    showImage(ui->labelDupPath->text(), ui->graphicsViewDup, dupScene);
+    QWidget::resizeEvent(event);
 }
 
 void MainWindow::getAction(QString act)
 {
     ui->textBrowserLog->append(act);
 }
+
+void MainWindow::on_pushButtonRotateLeft_clicked()
+{
+    ui->graphicsViewOrig->rotate(-90);
+    ui->graphicsViewDup->rotate(-90);
+}
+
+void MainWindow::on_pushButtonRotateRight_clicked()
+{
+    ui->graphicsViewOrig->rotate(90);
+    ui->graphicsViewDup->rotate(90);
+}
+
+void MainWindow::showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene)
+{
+    QImage image(path);
+    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(image.scaled(view->size(), Qt::KeepAspectRatio)));
+    scene->addItem(item);
+}
+
 
 void MainWindow::on_pushButtonSourcePath_clicked()
 {
@@ -72,9 +118,17 @@ void MainWindow::on_pushButtonAnalize_clicked()
         {
             QListWidgetItem *item = new QListWidgetItem;
             item->setText(i[0].fileName());
-            if(i.size() > 1)
+            if(i.size() == 2)
             {
                 item->setBackground(Qt::green);
+            }
+            else if(i.size() == 3)
+            {
+                item->setBackground(Qt::yellow);
+            }
+            else if(i.size() > 3)
+            {
+                item->setBackground(Qt::red);
             }
             ui->listWidgetOrig->addItem(item);
         }
@@ -87,9 +141,9 @@ void MainWindow::on_pushButtonAnalize_clicked()
 
 void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
 {
-    ui->listWidgetDup->clear();
-    int id = currentRow;
-    QFileInfo &fileInfo = filesList[id][0];
+    clearDup();
+    selectedFileId = currentRow; // сделать глобально
+    QFileInfo fileInfo = filesList[selectedFileId][0];
 
     ui->labelOrigPath->setText(fileInfo.absoluteFilePath());
     ui->labelOrigChangeDate->setText(fileInfo.lastModified().toString());
@@ -98,26 +152,21 @@ void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
     ui->labelOrigType->setText(fileInfo.suffix());
     ui->labelOrigExt->setText(fileInfo.suffix());
 
-    if(filesList[id].size() > 0)
+    if(filesList[selectedFileId].size() > 1)
     {
-        for(int i = 1; i < filesList[id].size(); i++)
+        for(int i = 1; i < filesList[selectedFileId].size(); i++)
         {
-            ui->listWidgetDup->addItem(filesList[id][i].fileName());
+            ui->listWidgetDup->addItem(filesList[selectedFileId][i].fileName());
         }
     }
 
-    QImage image(fileInfo.absoluteFilePath());
-    QGraphicsScene* scene = new QGraphicsScene();
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(image));
-    scene->addItem(item);
-    ui->graphicsViewOrig->setScene(scene);
-    ui->graphicsViewOrig->fitInView(scene->sceneRect());
+    showImage(fileInfo.absoluteFilePath(), ui->graphicsViewOrig, origScene);
 }
 
 void MainWindow::on_listWidgetDup_currentRowChanged(int currentRow)
 {
-    int id = currentRow;
-    QFileInfo &fileInfo = filesList[id][0];
+    selectedDupFileId = currentRow + 1;
+    QFileInfo fileInfo = filesList[selectedFileId][selectedDupFileId];
 
     ui->labelDupPath->setText(fileInfo.absoluteFilePath());
     ui->labelDupChangeDate->setText(fileInfo.lastModified().toString());
@@ -126,12 +175,5 @@ void MainWindow::on_listWidgetDup_currentRowChanged(int currentRow)
     ui->labelDupType->setText(fileInfo.suffix());
     ui->labelDupExt->setText(fileInfo.suffix());
 
-    if(filesList[id].size() > 0)
-    {
-        for(int i = 1; i < filesList[id].size(); i++)
-        {
-            ui->listWidgetDup->addItem(filesList[id][i].fileName());
-        }
-    }
+    showImage(fileInfo.absoluteFilePath(), ui->graphicsViewDup, dupScene);
 }
-

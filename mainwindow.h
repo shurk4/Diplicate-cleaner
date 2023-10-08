@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QGraphicsItem>
+#include <QGraphicsView>
 
 #include "compareEngine.h"
 #include "qlistwidget.h"
@@ -18,10 +19,23 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    QVector<QVector<QFileInfo>> filesList;
+    QVector<QVector<QFileInfo>> filesList;  // Список файлов с копиями
+//    QVector<QFileInfo> selectedFileCopies; // Список копий выбранного файла
+    CompareEngine engine;
+
+    int selectedFileId; // Выбранный файл оригинала
+    int selectedDupFileId; // Выбранный файл дупликата
+
+    void showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene);
     void clearAll();
     void clearOrig();
     void clearDup();
+
+    QGraphicsScene *origScene;
+    QGraphicsScene *dupScene;
+
+protected:
+    void resizeEvent(QResizeEvent *event);
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -39,9 +53,11 @@ private slots:
 
     void on_listWidgetDup_currentRowChanged(int currentRow);
 
+    void on_pushButtonRotateLeft_clicked();
+
+    void on_pushButtonRotateRight_clicked();
+
 private:
     Ui::MainWindow *ui;
-
-    CompareEngine engine;
 };
 #endif // MAINWINDOW_H
