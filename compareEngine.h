@@ -16,10 +16,11 @@ class CompareEngine : public QObject
 
     QString path = "0";
 
-    QMap<QByteArray, int> filesIdByHash; // Список ИД файлов по хешу
+    QMap<QByteArray, int> filesIdByHash; // Список ИД файлов по хешу, используется для поиска копий при заполнении filesById
+
     QVector<QVector<QFileInfo>> filesById; // Список файлов по ИД
 
-    int maxFileSize = 1000000000; // == 1ГБ макимальный размер файла для полного сравнения в байтах
+    int scannedFilesNum = 0;
 
     void listDirs(const QString _path); // просмотр директорий и запуск просмотра файлов
     void listFiles(const QString _path); // составление списков оригиналов и копий файлов в указанной директории
@@ -28,14 +29,34 @@ class CompareEngine : public QObject
     QByteArray getHash(const QString filePath);
     bool fullCompare(const QString path, const int id);
 
-public:
+public:    
+    enum Tolerance
+    {
+        MORE,
+        LESS,
+        EXACTLY
+    };
+
     CompareEngine();
 
     void setPath(const QString _path);
     bool startCompare(); // запуск движка, если путь пустой (== "0") возвращает false
-    QVector<QVector<QFileInfo>> getFilesList(); // получить список ид файлов
-    void clear();
+    QVector<QVector<QFileInfo>> getFilesList(); // получить список информации о файлах // Перемотрен
 
+    int getScannedFilesNum();
+    // Оригиналом считается файл с индексом 0, дубликаты с индексом 1+
+    int getOrigNum();
+    int getDupNum(int origId);
+
+    QString getOrigName(int id);
+    QFileInfo getOrigInfo(int id);
+
+    QString getDupName(int origId, int dupId);
+    QFileInfo getDubFileInfo(int origId, int dupId);
+
+    QVector<int> getIdsWithDup(int dupNum, Tolerance value); // создаёт и возвращает список id файлов имеющийх большее, меньшее или равное(value) количество копий указанное в dupNum. Если у файла нет копий он будет равен dupNum 1;
+
+    void clear();
 
 signals:
     void currentAction(QString);

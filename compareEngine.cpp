@@ -66,9 +66,66 @@ bool CompareEngine::startCompare()
     return false;
 }
 
-QVector<QVector<QFileInfo> > CompareEngine::getFilesList()
+QVector<QVector<QFileInfo> > CompareEngine::getFilesList() // Пересмотрен
 {
     return filesById;
+}
+
+int CompareEngine::getScannedFilesNum()
+{
+    return scannedFilesNum;
+}
+
+int CompareEngine::getOrigNum()
+{
+    return filesById.size();
+}
+
+int CompareEngine::getDupNum(int origId)
+{
+    return filesById[origId].size();
+}
+
+QString CompareEngine::getOrigName(int id)
+{
+    return filesById[id][0].fileName();
+}
+
+QFileInfo CompareEngine::getOrigInfo(int id)
+{
+    return filesById[id][0];
+}
+
+QString CompareEngine::getDupName(int origId, int dupId)
+{
+    return filesById[origId][dupId].fileName();
+}
+
+QFileInfo CompareEngine::getDubFileInfo(int origId, int dupId)
+{
+    return filesById[origId][dupId];
+}
+
+QVector<int> CompareEngine::getIdsWithDup(int dupNum, Tolerance value)
+{
+    QVector<int> result;
+    for(int i = 0; i < filesById.size(); i++)
+    {
+        switch (value) {
+        case MORE:
+            if(filesById[i].size() > dupNum) result.push_back(i);
+            break;
+
+        case LESS:
+            if(filesById[i].size() < dupNum) result.push_back(i);
+            break;
+
+        case EXACTLY:
+            if(filesById[i].size() == dupNum) result.push_back(i);
+            break;
+        }
+    }
+    return result;
 }
 
 void CompareEngine::listDirs(const QString _path)
@@ -92,6 +149,7 @@ void CompareEngine::listFiles(const QString _path)
         QString currentFile = _path + splitter + i;
         log("File: " + currentFile);
         addFile(currentFile);
+        scannedFilesNum++;
     }
 }
 

@@ -113,29 +113,65 @@ void MainWindow::on_pushButtonAnalize_clicked()
 {
     if(engine.startCompare())
     {
-        filesList = engine.getFilesList();
-        for(auto i : filesList)
+//        filesList = engine.getFilesList();
+//        for(auto i : filesList)
+//        {
+//            QListWidgetItem *item = new QListWidgetItem;
+//            item->setText(i[0].fileName());
+//            files++;
+//            if(i.size() == 2)
+//            {
+//                files2Dup++;
+//                item->setBackground(Qt::green);
+//            }
+//            else if(i.size() == 3)
+//            {
+//                files3Dup++;
+//                item->setBackground(Qt::yellow);
+//            }
+//            else if(i.size() > 3)
+//            {
+//                filesMoreDup++;
+//                item->setBackground(Qt::red);
+//            }
+//            ui->listWidgetOrig->addItem(item);
+//            ui->labelFilesNum->setText(QString::number(files));
+//            ui->labelFilesWithDup->setText(QString::number(filesWithDup));
+//            ui->label2Dup->setText(QString::number(files2Dup));
+//            ui->label3Dup->setText(QString::number(files3Dup));
+//            ui->labelMoreDup->setText(QString::number(filesMoreDup));
+//        }
+
+        // новая логика
+        int filesNum = engine.getOrigNum();
+
+        for(int i = 0; i < filesNum; i++)
         {
             QListWidgetItem *item = new QListWidgetItem;
-            item->setText(i[0].fileName());
-            files++;
-            if(i.size() == 2)
+            item->setText(engine.getOrigName(i));
+
+            int dupNum = engine.getDupNum(i);
+            if(dupNum > 1)
+            {
+                filesWithDup++;
+            }
+            if(dupNum == 2)
             {
                 files2Dup++;
                 item->setBackground(Qt::green);
             }
-            else if(i.size() == 3)
+            else if(dupNum == 3)
             {
                 files3Dup++;
                 item->setBackground(Qt::yellow);
             }
-            else if(i.size() > 3)
+            else if(dupNum > 3)
             {
                 filesMoreDup++;
                 item->setBackground(Qt::red);
             }
             ui->listWidgetOrig->addItem(item);
-            ui->labelFilesNum->setText(QString::number(files));
+            ui->labelFilesNum->setText(QString::number(engine.getScannedFilesNum()));
             ui->labelFilesWithDup->setText(QString::number(filesWithDup));
             ui->label2Dup->setText(QString::number(files2Dup));
             ui->label3Dup->setText(QString::number(files3Dup));
@@ -152,7 +188,8 @@ void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
 {
     clearDup();
     selectedFileId = currentRow; // сделать глобально
-    QFileInfo fileInfo = filesList[selectedFileId][0];
+//    QFileInfo fileInfo = filesList[selectedFileId][0];
+    QFileInfo fileInfo = engine.getOrigInfo(currentRow);
 
     ui->labelOrigPath->setText(fileInfo.absoluteFilePath());
     ui->labelOrigChangeDate->setText(fileInfo.lastModified().toString());
@@ -161,11 +198,13 @@ void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
     ui->labelOrigType->setText(fileInfo.suffix());
     ui->labelOrigExt->setText(fileInfo.suffix());
 
-    if(filesList[selectedFileId].size() > 1)
+    int dupNum = engine.getDupNum(currentRow);
+
+    if(dupNum > 1)
     {
-        for(int i = 1; i < filesList[selectedFileId].size(); i++)
+        for(int i = 1; i < dupNum; i++)
         {
-            ui->listWidgetDup->addItem(filesList[selectedFileId][i].fileName());
+            ui->listWidgetDup->addItem(engine.getDupName(currentRow, i));
         }
     }
 
@@ -175,7 +214,7 @@ void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
 void MainWindow::on_listWidgetDup_currentRowChanged(int currentRow)
 {
     selectedDupFileId = currentRow + 1;
-    QFileInfo fileInfo = filesList[selectedFileId][selectedDupFileId];
+    QFileInfo fileInfo = engine.getDubFileInfo(selectedFileId, selectedDupFileId);
 
     ui->labelDupPath->setText(fileInfo.absoluteFilePath());
     ui->labelDupChangeDate->setText(fileInfo.lastModified().toString());
