@@ -14,6 +14,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsViewOrig->setScene(origScene);
     dupScene = new QGraphicsScene();
     ui->graphicsViewDup->setScene(dupScene);
+
+
+    engine.moveToThread(&thread);
+    connect(this, &MainWindow::runCompare, &engine, &CompareEngine::runCompare);
+    connect(&engine, &CompareEngine::finishedCompare, this, &MainWindow::finishedCompare);
+    connect(this, &MainWindow::runFull, &engine, &CompareEngine::runFullCompare);
+    connect(&engine, &CompareEngine::finishedFull, this, &MainWindow::finishedFull);
+    connect(this, &MainWindow::runDelete, &engine, &CompareEngine::runDelete);
+    connect(&engine, &CompareEngine::finishedDelete, this, &MainWindow::finishedDelete);
 }
 
 MainWindow::~MainWindow()
@@ -64,6 +73,60 @@ void MainWindow::clearDup()
     ui->labelDupSize->clear();
 }
 
+void MainWindow::clearCounters()
+{
+    filesWithDup = 0;
+    files2Dup = 0;
+    files3Dup = 0;
+    filesMoreDup = 0;
+    ui->labelFilesNum->clear();
+    ui->labelFilesWithDup->clear();
+    ui->label2Dup->clear();
+    ui->label3Dup->clear();
+    ui->labelMoreDup->clear();
+}
+
+void MainWindow::showFilesList()
+{
+    clearOrig();
+    clearDup();
+
+    int filesNum = engine.getOrigNum();
+
+    for(int i = 0; i < filesNum; i++)
+    {
+        QListWidgetItem *item = new QListWidgetItem;
+        item->setText(engine.getOrigName(i));
+
+        int dupNum = engine.getDupNum(i);
+        if(dupNum > 1)
+        {
+            filesWithDup++;
+        }
+        if(dupNum == 2)
+        {
+            files2Dup++;
+            item->setBackground(Qt::green);
+        }
+        else if(dupNum == 3)
+        {
+            files3Dup++;
+            item->setBackground(Qt::yellow);
+        }
+        else if(dupNum > 3)
+        {
+            filesMoreDup++;
+            item->setBackground(Qt::red);
+        }
+        ui->listWidgetOrig->addItem(item);
+        ui->labelFilesNum->setText(QString::number(engine.getScannedFilesNum()));
+        ui->labelFilesWithDup->setText(QString::number(filesWithDup));
+        ui->label2Dup->setText(QString::number(files2Dup));
+        ui->label3Dup->setText(QString::number(files3Dup));
+        ui->labelMoreDup->setText(QString::number(filesMoreDup));
+    }
+}
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     ui->graphicsViewOrig->scene()->clear();
@@ -76,6 +139,23 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::getAction(QString act)
 {
     ui->textBrowserLog->append(act);
+}
+
+void MainWindow::finishedCompare()
+{
+    showFilesList();
+    thread.terminate();
+}
+
+void MainWindow::finishedFull()
+{
+    showFilesList();
+    thread.terminate();
+}
+
+void MainWindow::finishedDelete()
+{
+
 }
 
 void MainWindow::on_pushButtonRotateLeft_clicked()
@@ -105,90 +185,29 @@ void MainWindow::on_pushButtonSourcePath_clicked()
     if(!path.isEmpty())
     {
         ui->labelSourcePath->setText(path);
+        sourcePath = path;
         engine.setPath(path);
     }
 }
 
 void MainWindow::on_pushButtonAnalize_clicked()
 {
-    if(engine.startCompare())
-    {
-//        filesList = engine.getFilesList();
-//        for(auto i : filesList)
-//        {
-//            QListWidgetItem *item = new QListWidgetItem;
-//            item->setText(i[0].fileName());
-//            files++;
-//            if(i.size() == 2)
-//            {
-//                files2Dup++;
-//                item->setBackground(Qt::green);
-//            }
-//            else if(i.size() == 3)
-//            {
-//                files3Dup++;
-//                item->setBackground(Qt::yellow);
-//            }
-//            else if(i.size() > 3)
-//            {
-//                filesMoreDup++;
-//                item->setBackground(Qt::red);
-//            }
-//            ui->listWidgetOrig->addItem(item);
-//            ui->labelFilesNum->setText(QString::number(files));
-//            ui->labelFilesWithDup->setText(QString::number(filesWithDup));
-//            ui->label2Dup->setText(QString::number(files2Dup));
-//            ui->label3Dup->setText(QString::number(files3Dup));
-//            ui->labelMoreDup->setText(QString::number(filesMoreDup));
-//        }
-
-        // новая логика
-        int filesNum = engine.getOrigNum();
-
-        for(int i = 0; i < filesNum; i++)
-        {
-            QListWidgetItem *item = new QListWidgetItem;
-            item->setText(engine.getOrigName(i));
-
-            int dupNum = engine.getDupNum(i);
-            if(dupNum > 1)
-            {
-                filesWithDup++;
-            }
-            if(dupNum == 2)
-            {
-                files2Dup++;
-                item->setBackground(Qt::green);
-            }
-            else if(dupNum == 3)
-            {
-                files3Dup++;
-                item->setBackground(Qt::yellow);
-            }
-            else if(dupNum > 3)
-            {
-                filesMoreDup++;
-                item->setBackground(Qt::red);
-            }
-            ui->listWidgetOrig->addItem(item);
-            ui->labelFilesNum->setText(QString::number(engine.getScannedFilesNum()));
-            ui->labelFilesWithDup->setText(QString::number(filesWithDup));
-            ui->label2Dup->setText(QString::number(files2Dup));
-            ui->label3Dup->setText(QString::number(files3Dup));
-            ui->labelMoreDup->setText(QString::number(filesMoreDup));
-        }
-    }
-    else
+    qDebug() << "MainWindow thread: " << QThread::currentThreadId();
+    if(sourcePath.isEmpty())
     {
         QMessageBox::warning(this, "!", "Не указан путь к файлам!");
+        return;
     }
+
+    thread.start();
+    emit runCompare();
+//    showFilesList();
 }
 
 void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
 {
     clearDup();
     selectedFileId = currentRow; // сделать глобально
-//    QFileInfo fileInfo = filesList[selectedFileId][0];
     QFileInfo fileInfo = engine.getOrigInfo(currentRow);
 
     ui->labelOrigPath->setText(fileInfo.absoluteFilePath());
@@ -206,6 +225,7 @@ void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
         {
             ui->listWidgetDup->addItem(engine.getDupName(currentRow, i));
         }
+        ui->listWidgetDup->setCurrentRow(0);
     }
 
     showImage(fileInfo.absoluteFilePath(), ui->graphicsViewOrig, origScene);
@@ -225,3 +245,10 @@ void MainWindow::on_listWidgetDup_currentRowChanged(int currentRow)
 
     showImage(fileInfo.absoluteFilePath(), ui->graphicsViewDup, dupScene);
 }
+
+void MainWindow::on_pushButtonFullCompare_clicked()
+{
+    thread.start();
+    emit runFull();
+}
+

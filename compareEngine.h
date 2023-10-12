@@ -7,6 +7,7 @@
 #include <QMap>
 #include <QCryptographicHash>
 #include <QDebug>
+#include <QThread>
 
 class CompareEngine : public QObject
 {
@@ -21,13 +22,14 @@ class CompareEngine : public QObject
     QVector<QVector<QFileInfo>> filesById; // Список файлов по ИД
 
     int scannedFilesNum = 0;
+    int deletedFilesNum = 0;
 
     void listDirs(const QString _path); // просмотр директорий и запуск просмотра файлов
     void listFiles(const QString _path); // составление списков оригиналов и копий файлов в указанной директории
     void addFile(const QString filePath); // анализ файла и добавление в список оригиналов или копий
     void log(const QString text);
     QByteArray getHash(const QString filePath);
-    bool fullCompare(const QString path, const int id);
+    bool fullCompare(QFileInfo fileInfo1, QFileInfo fileInfo2);
 
 public:    
     enum Tolerance
@@ -43,6 +45,7 @@ public:
     bool startCompare(); // запуск движка, если путь пустой (== "0") возвращает false
     QVector<QVector<QFileInfo>> getFilesList(); // получить список информации о файлах // Перемотрен
 
+    void startFullCompare();
     int getScannedFilesNum();
     // Оригиналом считается файл с индексом 0, дубликаты с индексом 1+
     int getOrigNum();
@@ -55,11 +58,20 @@ public:
     QFileInfo getDubFileInfo(int origId, int dupId);
 
     QVector<int> getIdsWithDup(int dupNum, Tolerance value); // создаёт и возвращает список id файлов имеющийх большее, меньшее или равное(value) количество копий указанное в dupNum. Если у файла нет копий он будет равен dupNum 1;
+    void startDeleteDuplicates();
+    int getDeletedFilesNum();
 
     void clear();
 
 signals:
     void currentAction(QString);
-};
+    void finishedCompare();
+    void finishedFull();
+    void finishedDelete();
 
+public slots:
+    void runCompare();
+    void runFullCompare();
+    void runDelete();
+};
 #endif // COMPAREENGINE_H
