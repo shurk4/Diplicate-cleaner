@@ -8,9 +8,16 @@
 #include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QThread>
+#include <QTabBar>
 
 #include "compareEngine.h"
 #include "qlistwidget.h"
+
+enum TAB
+{
+    BASIC,
+    SAVE
+};
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +29,7 @@ class MainWindow : public QMainWindow
 
     QVector<QVector<QFileInfo>> filesList;  // Список файлов с копиями
     QString sourcePath;
+    QString savePath;
 
     CompareEngine engine;
     QThread thread;
@@ -34,6 +42,15 @@ class MainWindow : public QMainWindow
     int files3Dup = 0;
     int filesMoreDup = 0;
 
+    //Меню
+    void openFolder(TAB tab);
+    void analyze();
+    void fullCompare();
+    void dupDelete();
+    void saveFiles();
+    //Меню
+
+    void disableBasicActions();
     void showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene);
     void clearAll();
     void clearOrig();
@@ -64,13 +81,25 @@ public slots:
     void finishedDelete();
 
 private slots:
-    void on_pushButtonSourcePath_clicked();
-    void on_pushButtonAnalize_clicked();
     void on_listWidgetOrig_currentRowChanged(int currentRow);
     void on_listWidgetDup_currentRowChanged(int currentRow);
     void on_pushButtonRotateLeft_clicked();
     void on_pushButtonRotateRight_clicked();
-    void on_pushButtonFullCompare_clicked();
+
+    void on_openDir_triggered();
+    void on_analize_triggered();
+    void on_fullCompare_triggered();
+    void on_dupDelete_triggered();
+    void on_showLog_triggered(bool checked);
+    void on_saveOrig_triggered();
+
+    void on_checkBoxSortDirs_stateChanged(int arg1);
+
+    void on_pushButtonCancelSave_clicked();
+
+    void on_pushButtonSaveFolder_clicked();
+
+    void on_checkBoxRename_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

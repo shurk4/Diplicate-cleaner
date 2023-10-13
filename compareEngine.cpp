@@ -19,6 +19,11 @@ void CompareEngine::log(const QString text)
 void CompareEngine::clear()
 {
     path.clear();
+    clearLists();
+}
+
+void CompareEngine::clearLists()
+{
     filesById.clear();
     filesIdByHash.clear();
 }
@@ -38,7 +43,8 @@ void CompareEngine::runFullCompare()
 
 void CompareEngine::runDelete()
 {
-
+    startDeleteDuplicates();
+    emit finishedDelete();
 }
 
 QByteArray CompareEngine::getHash(const QString filePath)
@@ -57,11 +63,12 @@ QByteArray CompareEngine::getHash(const QString filePath)
 
 bool CompareEngine::startCompare()
 {
+    log("Directory analysis started\n");
     if(path != "0")
     {
         listDirs(path);
 
-        log("\n\n!!! --- RESULT --- !!!");
+        log("\n--- Searsh for duplicates");
 
         for(auto i : filesIdByHash.keys())
         {
@@ -92,7 +99,7 @@ QVector<QVector<QFileInfo> > CompareEngine::getFilesList() // Пересмотр
 // Побитовое сравнение ранее отобранных файлов
 void CompareEngine::startFullCompare()
 {
-    log("Full compare duplicate files started");
+    log("\n--- Full compare duplicate files started");
     for(int i = 0; i < filesById.size(); i++)
     {
         if(filesById[i].size() > 1)
@@ -127,7 +134,6 @@ bool CompareEngine::fullCompare(QFileInfo fileInfo1, QFileInfo fileInfo2)
         char buf1[bufSize];
         char buf2[bufSize];
 
-        log("Files opened!");
         while(file1.read(buf1, bufSize) && file2.read(buf2, bufSize))
         {
             for(int i = 0; i < bufSize; i++)
@@ -199,15 +205,14 @@ QVector<int> CompareEngine::getIdsWithDup(int dupNum, Tolerance value)
 
 void CompareEngine::startDeleteDuplicates()
 {
-    for(int i = 0; i < filesById.size(); i++)
+    for(auto &i : filesById)
     {
-        if(filesById[i].size() > 1)
+        if(i.size() > 1)
         {
-            for(int j = 0; j < filesById[i].size(); j++)
+            for(int j = i.size() - 1; j > 0; j--)
             {
-                QFile::remove(filesById[i][j].absoluteFilePath());
-                filesById[i].erase(filesById[i].begin() + j);
-                j--;
+                QFile::remove(i[j].absoluteFilePath());
+                i.pop_back();
             }
         }
     }
@@ -237,7 +242,7 @@ void CompareEngine::listFiles(const QString _path)
     for(const auto &i : filesList)
     {
         QString currentFile = _path + splitter + i;
-        log("File: " + currentFile);
+        log("   File: " + currentFile);
         addFile(currentFile);
         scannedFilesNum++;
     }

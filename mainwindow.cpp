@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsViewOrig->setScene(origScene);
     dupScene = new QGraphicsScene();
     ui->graphicsViewDup->setScene(dupScene);
+    ui->textBrowserLog->hide();
 
 
     engine.moveToThread(&thread);
@@ -23,11 +24,23 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&engine, &CompareEngine::finishedFull, this, &MainWindow::finishedFull);
     connect(this, &MainWindow::runDelete, &engine, &CompareEngine::runDelete);
     connect(&engine, &CompareEngine::finishedDelete, this, &MainWindow::finishedDelete);
+
+    disableBasicActions();
+    ui->tabWidget->tabBar()->hide();
+    ui->tabWidget->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+//Основные функции
+void MainWindow::disableBasicActions()
+{
+    ui->analize->setDisabled(true);
+    ui->fullCompare->setDisabled(true);
+    ui->dupDelete->setDisabled(true);
+    ui->saveOrig->setDisabled(true);
 }
 
 void MainWindow::clearAll()
@@ -36,9 +49,17 @@ void MainWindow::clearAll()
     filesList.clear();
 
     ui->textBrowserLog->clear();
+    ui->labelSourcePath->clear();
+    ui->labelSavePath->clear();
+
+    sourcePath.clear();
+    savePath.clear();
+
+    ui->saveOrig->setEnabled(false);
 
     clearOrig();
     clearDup();
+    clearCounters();
 }
 
 void MainWindow::clearOrig()
@@ -90,6 +111,7 @@ void MainWindow::showFilesList()
 {
     clearOrig();
     clearDup();
+    clearCounters();
 
     int filesNum = engine.getOrigNum();
 
@@ -125,6 +147,13 @@ void MainWindow::showFilesList()
         ui->label3Dup->setText(QString::number(files3Dup));
         ui->labelMoreDup->setText(QString::number(filesMoreDup));
     }
+    ui->listWidgetOrig->setCurrentRow(0);
+    if(filesWithDup == 0)
+    {
+        QMessageBox::information(this, "Ура!", "В указанной директории дубликатов не обнаружено.\n"
+                                               "Можно создать обработанную копию папки нажав \"Сохранить оригиналы\"");
+        ui->fullCompare->setEnabled(false);
+    }
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -139,21 +168,94 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::getAction(QString act)
 {
     ui->textBrowserLog->append(act);
+    ui->statusBar->showMessage(act);
+}
+
+void MainWindow::showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene)
+{
+    QImage image(path);
+    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(image.scaled(view->size(), Qt::KeepAspectRatio)));
+    scene->addItem(item);
+}
+//Основные функции
+//Меню
+void MainWindow::openFolder(TAB tab)
+{
+    QString path = QFileDialog::getExistingDirectory(this, "Выбор расположения файлов");
+    if(!path.isEmpty())
+    {
+        switch (tab) {
+        case BASIC:
+            clearAll();
+            disableBasicActions();
+            ui->labelSourcePath->setText(path);
+            sourcePath = path;
+            engine.setPath(path);
+            ui->analize->setEnabled(true);
+            break;
+        case SAVE:
+            ui->labelSavePath->setText(path);
+            savePath = path;
+            ui->widgetSaveSettings->setEnabled(true);
+            break;
+        }
+    }
+}
+
+void MainWindow::analyze()
+{
+    engine.clearLists();
+    qDebug() << "MainWindow thread: " << QThread::currentThreadId();
+    if(sourcePath.isEmpty())
+    {
+        QMessageBox::warning(this, "!", "Не указан путь к файлам!");
+        return;
+    }
+
+    thread.start();
+    emit runCompare();
+    ui->analize->setEnabled(false);
 }
 
 void MainWindow::finishedCompare()
 {
-    showFilesList();
     thread.terminate();
+    ui->statusBar->showMessage("Анализ выбранной директории закончен");
+    ui->fullCompare->setEnabled(true);
+    ui->saveOrig->setEnabled(true);
+    showFilesList();
+}
+
+void MainWindow::fullCompare()
+{
+    thread.start();
+    emit runFull();
+    ui->fullCompare->setEnabled(false);
 }
 
 void MainWindow::finishedFull()
 {
     showFilesList();
     thread.terminate();
+    ui->statusBar->showMessage("Полная проверка дубликатов закончена");
+    ui->dupDelete->setEnabled(true);
+}
+
+void MainWindow::dupDelete()
+{
+    thread.start();
+    emit runDelete();
+    ui->dupDelete->setEnabled(false);
 }
 
 void MainWindow::finishedDelete()
+{
+    QMessageBox::information(this, "Удаление завершено!", "Удаление дубликатов завершено!");
+    ui->statusBar->showMessage("Все дубликаты удалены");
+    showFilesList();
+}
+
+void MainWindow::saveFiles()
 {
 
 }
@@ -170,39 +272,32 @@ void MainWindow::on_pushButtonRotateRight_clicked()
     ui->graphicsViewDup->rotate(90);
 }
 
-void MainWindow::showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene)
+void MainWindow::on_openDir_triggered()
 {
-    QImage image(path);
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(image.scaled(view->size(), Qt::KeepAspectRatio)));
-    scene->addItem(item);
+    openFolder(BASIC);
 }
 
-
-void MainWindow::on_pushButtonSourcePath_clicked()
+void MainWindow::on_analize_triggered()
 {
-    clearAll();
-    QString path = QFileDialog::getExistingDirectory(this, "Выбор расположения файлов");
-    if(!path.isEmpty())
-    {
-        ui->labelSourcePath->setText(path);
-        sourcePath = path;
-        engine.setPath(path);
-    }
+    analyze();
 }
 
-void MainWindow::on_pushButtonAnalize_clicked()
+void MainWindow::on_fullCompare_triggered()
 {
-    qDebug() << "MainWindow thread: " << QThread::currentThreadId();
-    if(sourcePath.isEmpty())
-    {
-        QMessageBox::warning(this, "!", "Не указан путь к файлам!");
-        return;
-    }
-
-    thread.start();
-    emit runCompare();
-//    showFilesList();
+    fullCompare();
 }
+
+void MainWindow::on_dupDelete_triggered()
+{
+    dupDelete();
+}
+
+void MainWindow::on_showLog_triggered(bool checked)
+{
+    if(checked) ui->textBrowserLog->show();
+    else ui->textBrowserLog->hide();
+}
+//Меню
 
 void MainWindow::on_listWidgetOrig_currentRowChanged(int currentRow)
 {
@@ -246,9 +341,53 @@ void MainWindow::on_listWidgetDup_currentRowChanged(int currentRow)
     showImage(fileInfo.absoluteFilePath(), ui->graphicsViewDup, dupScene);
 }
 
-void MainWindow::on_pushButtonFullCompare_clicked()
+void MainWindow::on_saveOrig_triggered()
 {
-    thread.start();
-    emit runFull();
+    ui->tabWidget->setCurrentIndex(1);
+    ui->toolBarMain->hide();
+    if(ui->saveOrig->isEnabled())
+    {
+        ui->statusBar->showMessage("Для настройки параметров сохранения выбирите целоевую директорию.");
+    }
+    else
+    {
+        ui->statusBar->showMessage("Настройте параметры сохранения и нажмите \"Старт\".");
+    }
+}
+void MainWindow::on_checkBoxSortDirs_stateChanged(int arg1)
+{
+    if(arg1)
+    {
+        ui->checkBoxExtension->setEnabled(true);
+        ui->checkBoxFileType->setEnabled(true);
+        ui->checkBoxSortDates->setEnabled(true);
+        ui->checkBoxSortMonths->setEnabled(true);
+        ui->checkBoxSortYears->setEnabled(true);
+    }
+    else
+    {
+        ui->checkBoxExtension->setEnabled(false);
+        ui->checkBoxFileType->setEnabled(false);
+        ui->checkBoxSortDates->setEnabled(false);
+        ui->checkBoxSortMonths->setEnabled(false);
+        ui->checkBoxSortYears->setEnabled(false);
+    }
+}
+
+void MainWindow::on_pushButtonCancelSave_clicked()
+{
+    ui->tabWidget->setCurrentIndex(0);
+    ui->toolBarMain->show();
+    ui->statusBar->clearMessage();
+}
+
+void MainWindow::on_pushButtonSaveFolder_clicked()
+{
+    openFolder(SAVE);
+}
+
+void MainWindow::on_checkBoxRename_stateChanged(int arg1)
+{
+
 }
 

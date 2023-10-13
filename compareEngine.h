@@ -51,6 +51,8 @@ public:
     int getOrigNum();
     int getDupNum(int origId);
 
+    void startDeleteDuplicates();
+
     QString getOrigName(int id);
     QFileInfo getOrigInfo(int id);
 
@@ -58,10 +60,10 @@ public:
     QFileInfo getDubFileInfo(int origId, int dupId);
 
     QVector<int> getIdsWithDup(int dupNum, Tolerance value); // создаёт и возвращает список id файлов имеющийх большее, меньшее или равное(value) количество копий указанное в dupNum. Если у файла нет копий он будет равен dupNum 1;
-    void startDeleteDuplicates();
     int getDeletedFilesNum();
 
     void clear();
+    void clearLists();
 
 signals:
     void currentAction(QString);
