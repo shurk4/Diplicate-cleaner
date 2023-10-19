@@ -9,6 +9,7 @@
 #include <QGraphicsView>
 #include <QThread>
 #include <QTabBar>
+#include <QDateTime>
 
 #include "compareEngine.h"
 #include "qlistwidget.h"
@@ -51,12 +52,15 @@ class MainWindow : public QMainWindow
     //Меню
 
     void disableBasicActions();
+    void disableSaveActions();
     void showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene);
     void clearAll();
     void clearOrig();
     void clearDup();
     void clearCounters();
     void showFilesList();
+    void createSaveName(); // Не реализован
+    void showExample();
 
     QGraphicsScene *origScene;
     QGraphicsScene *dupScene;
@@ -100,6 +104,20 @@ private slots:
     void on_pushButtonSaveFolder_clicked();
 
     void on_checkBoxRename_stateChanged(int arg1);
+
+    void on_checkBoxSortDates_stateChanged(int arg1);
+
+    void on_checkBoxSortYears_stateChanged(int arg1);
+
+    void on_checkBoxSortMonths_stateChanged(int arg1);
+
+    void on_checkBoxSortFileType_stateChanged(int arg1);
+
+    void on_checkBoxSortExtension_stateChanged(int arg1);
+
+    void on_radioButtonDateName_clicked();
+
+    void on_radioButtonCustomName_clicked();
 
 private:
     Ui::MainWindow *ui;

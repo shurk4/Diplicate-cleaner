@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&engine, &CompareEngine::finishedDelete, this, &MainWindow::finishedDelete);
 
     disableBasicActions();
+    disableSaveActions();
+
     ui->tabWidget->tabBar()->hide();
     ui->tabWidget->setCurrentIndex(0);
 }
@@ -39,8 +41,17 @@ void MainWindow::disableBasicActions()
 {
     ui->analize->setDisabled(true);
     ui->fullCompare->setDisabled(true);
-    ui->dupDelete->setDisabled(true);
+    ui->dupDelete->setDisabled(true);    
     ui->saveOrig->setDisabled(true);
+}
+
+void MainWindow::disableSaveActions()
+{
+    ui->radioButtonDateName->setDisabled(true);
+    ui->radioButtonCustomName->setDisabled(true);
+    ui->widgetRanameOther->setDisabled(true);
+    ui->widgetRenameFormat->setDisabled(true);
+    ui->lineEditCustomName->setDisabled(true);
 }
 
 void MainWindow::clearAll()
@@ -156,6 +167,38 @@ void MainWindow::showFilesList()
     }
 }
 
+// Показывает пример сохранения файла
+void MainWindow::showExample()
+{
+    QString example = "/";
+    if(ui->checkBoxSortDirs->isChecked())
+    {
+        QDateTime dateTime;
+        dateTime = QDateTime::currentDateTime().toLocalTime();
+        if(ui->checkBoxSortYears->isChecked())
+        {
+            example += dateTime.toString("yyyy") + "/";
+        }
+        if(ui->checkBoxSortMonths->isChecked())
+        {
+            example += dateTime.toString("MM") + "/";
+        }
+        if(ui->checkBoxSortDates->isChecked())
+        {
+            example += dateTime.toString("dd") + "/";
+        }
+        if(ui->checkBoxSortFileType->isChecked())
+        {
+            example += "images/";
+        }
+        if(ui->checkBoxSortExtension->isChecked())
+        {
+            example += "jpeg/";
+        }
+    }
+    ui->labelExample->setText(example);
+}
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     ui->graphicsViewOrig->scene()->clear();
@@ -196,7 +239,7 @@ void MainWindow::openFolder(TAB tab)
         case SAVE:
             ui->labelSavePath->setText(path);
             savePath = path;
-            ui->widgetSaveSettings->setEnabled(true);
+            ui->pushButtonStartSave->setEnabled(true);
             break;
         }
     }
@@ -356,22 +399,11 @@ void MainWindow::on_saveOrig_triggered()
 }
 void MainWindow::on_checkBoxSortDirs_stateChanged(int arg1)
 {
-    if(arg1)
-    {
-        ui->checkBoxExtension->setEnabled(true);
-        ui->checkBoxFileType->setEnabled(true);
-        ui->checkBoxSortDates->setEnabled(true);
-        ui->checkBoxSortMonths->setEnabled(true);
-        ui->checkBoxSortYears->setEnabled(true);
-    }
-    else
-    {
-        ui->checkBoxExtension->setEnabled(false);
-        ui->checkBoxFileType->setEnabled(false);
-        ui->checkBoxSortDates->setEnabled(false);
-        ui->checkBoxSortMonths->setEnabled(false);
-        ui->checkBoxSortYears->setEnabled(false);
-    }
+        ui->checkBoxSortExtension->setEnabled(arg1);
+        ui->checkBoxSortFileType->setEnabled(arg1);
+        ui->checkBoxSortDates->setEnabled(arg1);
+        ui->checkBoxSortMonths->setEnabled(arg1);
+        ui->checkBoxSortYears->setEnabled(arg1);
 }
 
 void MainWindow::on_pushButtonCancelSave_clicked()
@@ -386,8 +418,61 @@ void MainWindow::on_pushButtonSaveFolder_clicked()
     openFolder(SAVE);
 }
 
-void MainWindow::on_checkBoxRename_stateChanged(int arg1)
+void MainWindow::on_checkBoxSortDates_stateChanged(int arg1)
 {
-
+    showExample();
 }
 
+void MainWindow::on_checkBoxSortYears_stateChanged(int arg1)
+{
+    showExample();
+}
+
+void MainWindow::on_checkBoxSortMonths_stateChanged(int arg1)
+{
+    showExample();
+}
+
+void MainWindow::on_checkBoxSortFileType_stateChanged(int arg1)
+{
+    showExample();
+}
+
+void MainWindow::on_checkBoxSortExtension_stateChanged(int arg1)
+{
+    showExample();
+}
+
+void MainWindow::on_checkBoxRename_stateChanged(int arg1)
+{
+    if(!arg1)
+    {
+        ui->widgetRenameFormat->setDisabled(true);
+        ui->lineEditCustomName->setDisabled(true);
+    }
+
+    ui->widgetRanameOther->setEnabled(arg1);
+    ui->radioButtonDateName->setEnabled(arg1);
+    ui->radioButtonCustomName->setEnabled(arg1);
+
+    ui->radioButtonCustomName->setChecked(true);
+    ui->lineEditCustomName->setEnabled(arg1);
+}
+
+void MainWindow::on_radioButtonDateName_clicked()
+{
+    if(ui->radioButtonDateName->isChecked())
+    {
+        ui->widgetRenameFormat->setEnabled(true);
+        ui->lineEditCustomName->setEnabled(false);
+    }
+}
+
+void MainWindow::on_radioButtonCustomName_clicked()
+{
+    if(ui->radioButtonCustomName->isChecked())
+    {
+        ui->widgetRenameFormat->setEnabled(false);
+        ui->lineEditCustomName->setEnabled(true);
+    }
+}

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>793</width>
-    <height>484</height>
+    <width>802</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="font">
@@ -37,6 +37,9 @@
     </property>
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="currentIndex">
        <number>1</number>
       </property>
@@ -816,6 +819,9 @@ box-shadow: 2, 5, #000;</string>
           </property>
           <item>
            <widget class="QLabel" name="label_16">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>Путь сохранения:    </string>
             </property>
@@ -823,6 +829,9 @@ box-shadow: 2, 5, #000;</string>
           </item>
           <item>
            <widget class="QLabel" name="labelSavePath">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -836,6 +845,9 @@ box-shadow: 2, 5, #000;</string>
           </item>
           <item>
            <widget class="QPushButton" name="pushButtonSaveFolder">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -852,7 +864,7 @@ box-shadow: 2, 5, #000;</string>
         <item>
          <widget class="QWidget" name="widgetSaveSettings" native="true">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
            <property name="spacing">
@@ -872,6 +884,9 @@ box-shadow: 2, 5, #000;</string>
            </property>
            <item>
             <widget class="QLabel" name="label_24">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="text">
               <string>Параметры сохранения:</string>
              </property>
@@ -881,11 +896,20 @@ box-shadow: 2, 5, #000;</string>
             <layout class="QHBoxLayout" name="horizontalLayout_16">
              <item>
               <widget class="QLabel" name="label_20">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>55</width>
+                 <height>16777215</height>
+                </size>
                </property>
                <property name="text">
                 <string>Пример: </string>
@@ -894,14 +918,20 @@ box-shadow: 2, 5, #000;</string>
              </item>
              <item>
               <widget class="QLabel" name="labelExample">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>-</string>
+                <string>fileName</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -913,6 +943,9 @@ box-shadow: 2, 5, #000;</string>
               <layout class="QVBoxLayout" name="verticalLayout_11">
                <item>
                 <widget class="QCheckBox" name="checkBoxSortDirs">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
                   <string>Сортировать по директориям:</string>
                  </property>
@@ -949,7 +982,7 @@ box-shadow: 2, 5, #000;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="checkBoxFileType">
+                <widget class="QCheckBox" name="checkBoxSortFileType">
                  <property name="enabled">
                   <bool>false</bool>
                  </property>
@@ -959,7 +992,7 @@ box-shadow: 2, 5, #000;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="checkBoxExtension">
+                <widget class="QCheckBox" name="checkBoxSortExtension">
                  <property name="enabled">
                   <bool>false</bool>
                  </property>
@@ -970,6 +1003,9 @@ box-shadow: 2, 5, #000;</string>
                </item>
                <item>
                 <spacer name="verticalSpacer_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
@@ -987,370 +1023,229 @@ box-shadow: 2, 5, #000;</string>
               <layout class="QVBoxLayout" name="verticalLayout_12">
                <item>
                 <widget class="QCheckBox" name="checkBoxRename">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
-                  <string>Переименовать файлы</string>
+                  <string>Переименовывать файлы</string>
                  </property>
                 </widget>
                </item>
                <item>
+                <widget class="QWidget" name="widgetRanameOther" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_19">
+                  <item>
+                   <widget class="QLabel" name="labelSplitter">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="text">
+                     <string>Разделитель:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="comboBoxSplitter">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>пробел</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>_</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>~</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>@</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>#</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>$</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>%</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>^</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>`</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>'</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_14">
+                    <property name="text">
+                     <string>Нумерация:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="comboBoxNumeric">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>90</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>00001</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>0001</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>001</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>01</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>1</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QRadioButton" name="radioButtonDateName">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
                   <string>Дата создания/изменения:</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_18">
-                 <item>
-                  <widget class="QComboBox" name="comboBoxDateFormat1">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-2023</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-23</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-месяц</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-00</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>число</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>часы</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>минуты</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="comboBoxDateFormat2">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-2023</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-23</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-месяц</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-00</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>число</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>часы</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>минуты</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="comboBoxDateFormat3">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-2023</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-23</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-месяц</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-00</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>число</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>часы</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>минуты</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="comboBoxDateFormat4">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-2023</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-23</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-месяц</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-00</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>число</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>часы</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>минуты</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="comboBoxDateFormat5">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-2023</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>год-23</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-месяц</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>месяц-00</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>число</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>часы</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>минуты</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_19">
-                 <item>
-                  <widget class="QLabel" name="label_22">
-                   <property name="text">
-                    <string>Разделитель:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="comboBox">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>пробел</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>_</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>-</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>~</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>@</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>#</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>$</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>%</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>^</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>`</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>'</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
+                <widget class="QWidget" name="widgetRenameFormat" native="true">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_13">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_18">
+                    <item>
+                     <widget class="QCheckBox" name="checkBoxYear">
+                      <property name="text">
+                       <string>CheckBox</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="checkBox">
+                      <property name="text">
+                       <string>CheckBox</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="checkBox_2">
+                      <property name="text">
+                       <string>CheckBox</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="checkBox_3">
+                      <property name="text">
+                       <string>CheckBox</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="checkBox_4">
+                      <property name="text">
+                       <string>CheckBox</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_20">
                  <item>
                   <widget class="QRadioButton" name="radioButtonCustomName">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
                    <property name="text">
                     <string>Пользовательское имя:</string>
                    </property>
@@ -1359,7 +1254,10 @@ box-shadow: 2, 5, #000;</string>
                  <item>
                   <widget class="QLineEdit" name="lineEditCustomName">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>file</string>
                    </property>
                   </widget>
                  </item>
@@ -1367,6 +1265,9 @@ box-shadow: 2, 5, #000;</string>
                </item>
                <item>
                 <spacer name="verticalSpacer_3">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
@@ -1387,6 +1288,9 @@ box-shadow: 2, 5, #000;</string>
         </item>
         <item>
          <spacer name="verticalSpacer">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -1402,6 +1306,9 @@ box-shadow: 2, 5, #000;</string>
          <layout class="QHBoxLayout" name="horizontalLayout_13">
           <item>
            <spacer name="horizontalSpacer_2">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -1415,6 +1322,9 @@ box-shadow: 2, 5, #000;</string>
           </item>
           <item>
            <widget class="QPushButton" name="pushButtonCancelSave">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>Отмена</string>
             </property>
@@ -1422,6 +1332,9 @@ box-shadow: 2, 5, #000;</string>
           </item>
           <item>
            <widget class="QPushButton" name="pushButtonStartSave">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>Старт!</string>
             </property>
@@ -1453,7 +1366,7 @@ box-shadow: 2, 5, #000;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>793</width>
+     <width>802</width>
      <height>23</height>
     </rect>
    </property>
