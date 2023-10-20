@@ -465,7 +465,7 @@ QString MainWindow::createSaveName(QDateTime dateTime)
     {
         if(ui->radioButtonCustomName->isChecked())
         {
-            name = ui->lineEditCustomName->text() + saveSplitter + ui->comboBoxNumeric->currentText();
+            name = ui->lineEditCustomName->text();
         }
         else
         {
@@ -496,6 +496,7 @@ QString MainWindow::createSaveName(QDateTime dateTime)
             }
             name = dateTime.toString(saveDateTimeFormat);
         }
+        name += saveSplitter + ui->comboBoxNumeric->currentText();
     }
     else name = "fileName";
 
