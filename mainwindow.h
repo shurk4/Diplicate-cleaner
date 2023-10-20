@@ -67,8 +67,9 @@ class MainWindow : public QMainWindow
     QString saveNameExample = "FileName";
     QString saveNameFormat;
     QString saveSplitter = " ";
+    QString saveDateTimeFormat;
 
-    QString createSaveName(QString format = "");
+    QString createSaveName(QDateTime dateTime = QDateTime::currentDateTime().toLocalTime());
     void showExample();
     void saveFiles();
 
@@ -139,6 +140,22 @@ private slots:
     void on_checkBoxMonth_stateChanged(int arg1);
 
     void on_checkBoxTime_stateChanged(int arg1);
+
+    void on_radioButtonYYYY_clicked();
+
+    void on_radioButtonYY_clicked();
+
+    void on_radioButtonMM_clicked();
+
+    void on_radioButtonMMM_clicked();
+
+    void on_radioButtonMMMM_clicked();
+
+    void on_radioButtonHHMM_clicked();
+
+    void on_radioButtonHHMMSS_clicked();
+
+    void on_checkBoxDate_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

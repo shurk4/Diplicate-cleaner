@@ -458,7 +458,7 @@ void MainWindow::showExample()
     ui->labelExample->setText(example);
 }
 
-QString MainWindow::createSaveName(QString format)
+QString MainWindow::createSaveName(QDateTime dateTime)
 {
     QString name;
     if(ui->checkBoxRename->isChecked())
@@ -469,7 +469,32 @@ QString MainWindow::createSaveName(QString format)
         }
         else
         {
-            // обработать формат времени
+            saveDateTimeFormat = "";
+            if(ui->checkBoxYear->isChecked())
+            {
+                if(ui->radioButtonYYYY->isChecked()) saveDateTimeFormat += "yyyy";
+                else saveDateTimeFormat += "yy";
+                saveDateTimeFormat += saveSplitter;
+            }
+            if(ui->checkBoxMonth->isChecked())
+            {
+                if(ui->radioButtonMMMM->isChecked()) saveDateTimeFormat += "MMMM";
+                else if(ui->radioButtonMMM->isChecked()) saveDateTimeFormat += "MMM";
+                else saveDateTimeFormat += "MM";
+                saveDateTimeFormat += saveSplitter;
+            }
+            if(ui->checkBoxDate->isChecked())
+            {
+                saveDateTimeFormat += "dd";
+                saveDateTimeFormat += saveSplitter;
+            }
+            if(ui->checkBoxTime->isChecked())
+            {
+                if(ui->radioButtonHHMM->isChecked()) saveDateTimeFormat += "hhmm";
+                if(ui->radioButtonHHMMSS->isChecked()) saveDateTimeFormat += "hhmmss";
+                saveDateTimeFormat += saveSplitter;
+            }
+            name = dateTime.toString(saveDateTimeFormat);
         }
     }
     else name = "fileName";
@@ -521,12 +546,14 @@ void MainWindow::on_checkBoxYear_stateChanged(int arg1)
 {
     if(arg1) ui->widgetYearFormat->show();
     else ui->widgetYearFormat->hide();
+    showExample();
 }
 
 void MainWindow::on_checkBoxMonth_stateChanged(int arg1)
 {
     if(arg1) ui->widgetMonthFormat->show();
     else ui->widgetMonthFormat->hide();
+    showExample();
 }
 
 void MainWindow::on_lineEditCustomName_textEdited(const QString &arg1)
@@ -565,5 +592,45 @@ void MainWindow::on_checkBoxTime_stateChanged(int arg1)
         ui->radioButtonHHMMSS->setText(QDateTime::currentDateTime().toLocalTime().toString("hh:mm:ss"));
     }
     else ui->widgetTimeFormat->hide();
+    showExample();
 }
 
+void MainWindow::on_radioButtonYYYY_clicked()
+{
+    showExample();
+}
+
+void MainWindow::on_radioButtonYY_clicked()
+{
+    showExample();
+}
+
+void MainWindow::on_radioButtonMM_clicked()
+{
+    showExample();
+}
+
+void MainWindow::on_radioButtonMMM_clicked()
+{
+    showExample();
+}
+
+void MainWindow::on_radioButtonMMMM_clicked()
+{
+    showExample();
+}
+
+void MainWindow::on_radioButtonHHMM_clicked()
+{
+    showExample();
+}
+
+void MainWindow::on_radioButtonHHMMSS_clicked()
+{
+    showExample();
+}
+
+void MainWindow::on_checkBoxDate_stateChanged(int arg1)
+{
+    showExample();
+}

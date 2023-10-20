@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
-    <height>448</height>
+    <width>653</width>
+    <height>479</height>
    </rect>
   </property>
   <property name="font">
@@ -141,6 +141,7 @@
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -166,6 +167,7 @@
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1310,6 +1312,9 @@ box-shadow: 2, 5, #000;</string>
                            <property name="text">
                             <string/>
                            </property>
+                           <property name="checked">
+                            <bool>true</bool>
+                           </property>
                           </widget>
                          </item>
                         </layout>
@@ -1367,6 +1372,9 @@ box-shadow: 2, 5, #000;</string>
                           <widget class="QRadioButton" name="radioButtonMM">
                            <property name="text">
                             <string/>
+                           </property>
+                           <property name="checked">
+                            <bool>true</bool>
                            </property>
                           </widget>
                          </item>
@@ -1460,6 +1468,9 @@ box-shadow: 2, 5, #000;</string>
                           <widget class="QRadioButton" name="radioButtonHHMM">
                            <property name="text">
                             <string/>
+                           </property>
+                           <property name="checked">
+                            <bool>true</bool>
                            </property>
                           </widget>
                          </item>
@@ -1609,8 +1620,8 @@ box-shadow: 2, 5, #000;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>584</width>
-     <height>24</height>
+     <width>653</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
