@@ -27,13 +27,15 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+//--Basic
     QVector<QVector<QFileInfo>> filesList;  // Список файлов с копиями
     QString sourcePath;
-    QString savePath;
 
     CompareEngine engine;
     QThread thread;
+
+    QGraphicsScene *origScene;
+    QGraphicsScene *dupScene;
 
     int selectedFileId; // Выбранный файл оригинала
     int selectedDupFileId; // Выбранный файл дубликата
@@ -43,14 +45,13 @@ class MainWindow : public QMainWindow
     int files3Dup = 0;
     int filesMoreDup = 0;
 
-    //Меню
+    //Menu
     void openFolder(TAB tab);
     void analyze();
     void fullCompare();
     void dupDelete();
-    void saveFiles();
-    //Меню
 
+    //Actions
     void disableBasicActions();
     void disableSaveActions();
     void showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene);
@@ -59,11 +60,19 @@ class MainWindow : public QMainWindow
     void clearDup();
     void clearCounters();
     void showFilesList();
-    void createSaveName(); // Не реализован
-    void showExample();
 
-    QGraphicsScene *origScene;
-    QGraphicsScene *dupScene;
+
+//--Save
+    QString savePath;
+    QString saveNameExample = "FileName";
+    QString saveNameFormat;
+    QString saveSplitter = " ";
+
+    QString createSaveName(QString format = "");
+    void showExample();
+    void saveFiles();
+
+    void hideSaveWidgets();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -118,6 +127,18 @@ private slots:
     void on_radioButtonDateName_clicked();
 
     void on_radioButtonCustomName_clicked();
+
+    void on_checkBoxYear_stateChanged(int arg1);
+
+    void on_lineEditCustomName_textEdited(const QString &arg1);
+
+    void on_comboBoxSplitter_activated(int index);
+
+    void on_comboBoxNumeric_activated(int index);
+
+    void on_checkBoxMonth_stateChanged(int arg1);
+
+    void on_checkBoxTime_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

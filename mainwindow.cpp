@@ -30,6 +30,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->tabWidget->tabBar()->hide();
     ui->tabWidget->setCurrentIndex(0);
+
+    ui->radioButtonYY->setText(QDateTime::currentDateTime().toLocalTime().toString("yy"));
+    ui->radioButtonYYYY->setText(QDateTime::currentDateTime().toLocalTime().toString("yyyy"));
+    ui->radioButtonMM->setText(QDateTime::currentDateTime().toLocalTime().toString("MM"));
+    ui->radioButtonMMM->setText(QDateTime::currentDateTime().toLocalTime().toString("MMM"));
+    ui->radioButtonMMMM->setText(QDateTime::currentDateTime().toLocalTime().toString("MMMM"));
+    hideSaveWidgets();
 }
 
 MainWindow::~MainWindow()
@@ -167,38 +174,6 @@ void MainWindow::showFilesList()
     }
 }
 
-// Показывает пример сохранения файла
-void MainWindow::showExample()
-{
-    QString example = "/";
-    if(ui->checkBoxSortDirs->isChecked())
-    {
-        QDateTime dateTime;
-        dateTime = QDateTime::currentDateTime().toLocalTime();
-        if(ui->checkBoxSortYears->isChecked())
-        {
-            example += dateTime.toString("yyyy") + "/";
-        }
-        if(ui->checkBoxSortMonths->isChecked())
-        {
-            example += dateTime.toString("MM") + "/";
-        }
-        if(ui->checkBoxSortDates->isChecked())
-        {
-            example += dateTime.toString("dd") + "/";
-        }
-        if(ui->checkBoxSortFileType->isChecked())
-        {
-            example += "images/";
-        }
-        if(ui->checkBoxSortExtension->isChecked())
-        {
-            example += "jpeg/";
-        }
-    }
-    ui->labelExample->setText(example);
-}
-
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     ui->graphicsViewOrig->scene()->clear();
@@ -303,6 +278,13 @@ void MainWindow::saveFiles()
 
 }
 
+void MainWindow::hideSaveWidgets()
+{
+    ui->widgetYearFormat->hide();
+    ui->widgetMonthFormat->hide();
+    ui->widgetTimeFormat->hide();
+}
+
 void MainWindow::on_pushButtonRotateLeft_clicked()
 {
     ui->graphicsViewOrig->rotate(-90);
@@ -390,7 +372,7 @@ void MainWindow::on_saveOrig_triggered()
     ui->toolBarMain->hide();
     if(ui->saveOrig->isEnabled())
     {
-        ui->statusBar->showMessage("Для настройки параметров сохранения выбирите целоевую директорию.");
+        ui->statusBar->showMessage("Для настройки параметров сохранения выберите целоевую директорию.");
     }
     else
     {
@@ -442,10 +424,66 @@ void MainWindow::on_checkBoxSortExtension_stateChanged(int arg1)
 {
     showExample();
 }
+// Показывает пример сохранения файла
+void MainWindow::showExample()
+{
+    QString example = "/";
+    saveNameExample = createSaveName();
+    if(ui->checkBoxSortDirs->isChecked())
+    {
+        QDateTime dateTime;
+        dateTime = QDateTime::currentDateTime().toLocalTime();
+        if(ui->checkBoxSortYears->isChecked())
+        {
+            example += dateTime.toString("yyyy") + "/";
+        }
+        if(ui->checkBoxSortMonths->isChecked())
+        {
+            example += dateTime.toString("MM") + "/";
+        }
+        if(ui->checkBoxSortDates->isChecked())
+        {
+            example += dateTime.toString("dd") + "/";
+        }
+        if(ui->checkBoxSortFileType->isChecked())
+        {
+            example += "images/";
+        }
+        if(ui->checkBoxSortExtension->isChecked())
+        {
+            example += "jpeg/";
+        }
+    }
+    example += saveNameExample + ".jpg";
+    ui->labelExample->setText(example);
+}
+
+QString MainWindow::createSaveName(QString format)
+{
+    QString name;
+    if(ui->checkBoxRename->isChecked())
+    {
+        if(ui->radioButtonCustomName->isChecked())
+        {
+            name = ui->lineEditCustomName->text() + saveSplitter + ui->comboBoxNumeric->currentText();
+        }
+        else
+        {
+            // обработать формат времени
+        }
+    }
+    else name = "fileName";
+
+    return name;
+}
 
 void MainWindow::on_checkBoxRename_stateChanged(int arg1)
 {
-    if(!arg1)
+    if(arg1)
+    {
+        saveNameExample = createSaveName();
+    }
+    else
     {
         ui->widgetRenameFormat->setDisabled(true);
         ui->lineEditCustomName->setDisabled(true);
@@ -457,6 +495,7 @@ void MainWindow::on_checkBoxRename_stateChanged(int arg1)
 
     ui->radioButtonCustomName->setChecked(true);
     ui->lineEditCustomName->setEnabled(arg1);
+    showExample();
 }
 
 void MainWindow::on_radioButtonDateName_clicked()
@@ -475,4 +514,56 @@ void MainWindow::on_radioButtonCustomName_clicked()
         ui->widgetRenameFormat->setEnabled(false);
         ui->lineEditCustomName->setEnabled(true);
     }
+    showExample();
 }
+
+void MainWindow::on_checkBoxYear_stateChanged(int arg1)
+{
+    if(arg1) ui->widgetYearFormat->show();
+    else ui->widgetYearFormat->hide();
+}
+
+void MainWindow::on_checkBoxMonth_stateChanged(int arg1)
+{
+    if(arg1) ui->widgetMonthFormat->show();
+    else ui->widgetMonthFormat->hide();
+}
+
+void MainWindow::on_lineEditCustomName_textEdited(const QString &arg1)
+{
+    showExample();
+}
+
+void MainWindow::on_comboBoxSplitter_activated(int index)
+{
+    if(index == 0)
+    {
+        saveSplitter = " ";
+    }
+    else if(index == 1)
+    {
+        saveSplitter = "";
+    }
+    else
+    {
+        saveSplitter = ui->comboBoxSplitter->currentText();
+    }
+    showExample();
+}
+
+void MainWindow::on_comboBoxNumeric_activated(int index)
+{
+    showExample();
+}
+
+void MainWindow::on_checkBoxTime_stateChanged(int arg1)
+{
+    if(arg1)
+    {
+        ui->widgetTimeFormat->show();
+        ui->radioButtonHHMM->setText(QDateTime::currentDateTime().toLocalTime().toString("hh:mm"));
+        ui->radioButtonHHMMSS->setText(QDateTime::currentDateTime().toLocalTime().toString("hh:mm:ss"));
+    }
+    else ui->widgetTimeFormat->hide();
+}
+

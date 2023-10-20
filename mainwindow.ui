@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
-    <height>533</height>
+    <width>584</width>
+    <height>448</height>
    </rect>
   </property>
   <property name="font">
@@ -217,7 +217,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Файлов с дубликатами:</string>
+              <string>Имеют дубликаты:</string>
              </property>
             </widget>
            </item>
@@ -313,7 +313,7 @@
            <item>
             <widget class="QLabel" name="label_15">
              <property name="text">
-              <string>Больше 3 копий:</string>
+              <string>3+ копий:</string>
              </property>
             </widget>
            </item>
@@ -928,7 +928,7 @@ box-shadow: 2, 5, #000;</string>
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>fileName</string>
+                <string>fileName.jpg</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -941,6 +941,9 @@ box-shadow: 2, 5, #000;</string>
             <layout class="QHBoxLayout" name="horizontalLayout_17">
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_11">
+               <property name="spacing">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QCheckBox" name="checkBoxSortDirs">
                  <property name="enabled">
@@ -1021,6 +1024,9 @@ box-shadow: 2, 5, #000;</string>
              </item>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_12">
+               <property name="spacing">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QCheckBox" name="checkBoxRename">
                  <property name="enabled">
@@ -1034,6 +1040,21 @@ box-shadow: 2, 5, #000;</string>
                <item>
                 <widget class="QWidget" name="widgetRanameOther" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_19">
+                  <property name="spacing">
+                   <number>2</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QLabel" name="labelSplitter">
                     <property name="enabled">
@@ -1050,7 +1071,7 @@ box-shadow: 2, 5, #000;</string>
                      <bool>true</bool>
                     </property>
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
@@ -1058,6 +1079,11 @@ box-shadow: 2, 5, #000;</string>
                     <item>
                      <property name="text">
                       <string>пробел</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>нет</string>
                      </property>
                     </item>
                     <item>
@@ -1163,8 +1189,45 @@ box-shadow: 2, 5, #000;</string>
                     </item>
                    </widget>
                   </item>
+                  <item>
+                   <spacer name="horizontalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
                 </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_20">
+                 <item>
+                  <widget class="QRadioButton" name="radioButtonCustomName">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Пользовательское имя:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lineEditCustomName">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>file</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <widget class="QRadioButton" name="radioButtonDateName">
@@ -1199,69 +1262,249 @@ box-shadow: 2, 5, #000;</string>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_18">
+                    <property name="spacing">
+                     <number>2</number>
+                    </property>
                     <item>
-                     <widget class="QCheckBox" name="checkBoxYear">
-                      <property name="text">
-                       <string>CheckBox</string>
+                     <layout class="QVBoxLayout" name="verticalLayout_14">
+                      <property name="spacing">
+                       <number>0</number>
                       </property>
-                     </widget>
+                      <item>
+                       <widget class="QCheckBox" name="checkBoxYear">
+                        <property name="text">
+                         <string>Год</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QWidget" name="widgetYearFormat" native="true">
+                        <property name="enabled">
+                         <bool>true</bool>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_15">
+                         <property name="spacing">
+                          <number>0</number>
+                         </property>
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <widget class="QRadioButton" name="radioButtonYYYY">
+                           <property name="text">
+                            <string/>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButtonYY">
+                           <property name="text">
+                            <string/>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_5">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="checkBox">
-                      <property name="text">
-                       <string>CheckBox</string>
+                     <layout class="QVBoxLayout" name="verticalLayout_16">
+                      <property name="spacing">
+                       <number>0</number>
                       </property>
-                     </widget>
+                      <item>
+                       <widget class="QCheckBox" name="checkBoxMonth">
+                        <property name="text">
+                         <string>Месяц</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QWidget" name="widgetMonthFormat" native="true">
+                        <property name="enabled">
+                         <bool>true</bool>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_17">
+                         <property name="spacing">
+                          <number>0</number>
+                         </property>
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <widget class="QRadioButton" name="radioButtonMM">
+                           <property name="text">
+                            <string/>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButtonMMM">
+                           <property name="text">
+                            <string/>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButtonMMMM">
+                           <property name="text">
+                            <string/>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_6">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="checkBox_2">
-                      <property name="text">
-                       <string>CheckBox</string>
-                      </property>
-                     </widget>
+                     <layout class="QVBoxLayout" name="verticalLayout_18">
+                      <item>
+                       <widget class="QCheckBox" name="checkBoxDate">
+                        <property name="text">
+                         <string>Число</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_4">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="checkBox_3">
-                      <property name="text">
-                       <string>CheckBox</string>
+                     <layout class="QVBoxLayout" name="verticalLayout_19">
+                      <property name="spacing">
+                       <number>0</number>
                       </property>
-                     </widget>
+                      <item>
+                       <widget class="QCheckBox" name="checkBoxTime">
+                        <property name="text">
+                         <string>Время</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QWidget" name="widgetTimeFormat" native="true">
+                        <layout class="QVBoxLayout" name="verticalLayout_20">
+                         <property name="spacing">
+                          <number>0</number>
+                         </property>
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <widget class="QRadioButton" name="radioButtonHHMM">
+                           <property name="text">
+                            <string/>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButtonHHMMSS">
+                           <property name="text">
+                            <string/>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_7">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="checkBox_4">
-                      <property name="text">
-                       <string>CheckBox</string>
+                     <spacer name="horizontalSpacer_4">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
                       </property>
-                     </widget>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                    </layout>
                   </item>
                  </layout>
                 </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_20">
-                 <item>
-                  <widget class="QRadioButton" name="radioButtonCustomName">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="text">
-                    <string>Пользовательское имя:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEditCustomName">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="text">
-                    <string>file</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </item>
                <item>
                 <spacer name="verticalSpacer_3">
@@ -1366,8 +1609,8 @@ box-shadow: 2, 5, #000;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>802</width>
-     <height>23</height>
+     <width>584</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
