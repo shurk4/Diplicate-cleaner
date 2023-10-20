@@ -635,3 +635,14 @@ void MainWindow::on_checkBoxDate_stateChanged(int arg1)
 {
     showExample();
 }
+
+void MainWindow::on_pushButtonStartSave_clicked()
+{
+    if(savePath.isEmpty())
+    {
+        QMessageBox::information(this, "Save error", "No save path");
+        return;
+    }
+
+}
+

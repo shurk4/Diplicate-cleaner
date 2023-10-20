@@ -157,6 +157,8 @@ private slots:
 
     void on_checkBoxDate_stateChanged(int arg1);
 
+    void on_pushButtonStartSave_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
