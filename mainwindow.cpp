@@ -59,6 +59,8 @@ void MainWindow::disableSaveActions()
     ui->widgetRanameOther->setDisabled(true);
     ui->widgetRenameFormat->setDisabled(true);
     ui->lineEditCustomName->setDisabled(true);
+    ui->comboBoxSplitter->setDisabled(true);
+    ui->labelSplitter->setDisabled(true);
 }
 
 void MainWindow::clearAll()
@@ -372,7 +374,7 @@ void MainWindow::on_saveOrig_triggered()
     ui->toolBarMain->hide();
     if(ui->saveOrig->isEnabled())
     {
-        ui->statusBar->showMessage("Для настройки параметров сохранения выберите целоевую директорию.");
+        ui->statusBar->showMessage("Для настройки параметров сохранения выберите целевую директорию.");
     }
     else
     {
@@ -436,22 +438,47 @@ void MainWindow::showExample()
         if(ui->checkBoxSortYears->isChecked())
         {
             example += dateTime.toString("yyyy") + "/";
+            saveEngine.setFoldersFormat(SaveEngine::YEAR);
+        }
+        else
+        {
+            saveEngine.deleteFoldersFormat(SaveEngine::YEAR);
         }
         if(ui->checkBoxSortMonths->isChecked())
         {
             example += dateTime.toString("MM") + "/";
+            saveEngine.setFoldersFormat(SaveEngine::MONTH);
+        }
+        else
+        {
+            saveEngine.deleteFoldersFormat(SaveEngine::MONTH);
         }
         if(ui->checkBoxSortDates->isChecked())
         {
             example += dateTime.toString("dd") + "/";
+            saveEngine.setFoldersFormat(SaveEngine::DATE);
+        }
+        else
+        {
+            saveEngine.deleteFoldersFormat(SaveEngine::DATE);
         }
         if(ui->checkBoxSortFileType->isChecked())
         {
             example += "images/";
+            saveEngine.setFoldersFormat(SaveEngine::TYPE);
+        }
+        else
+        {
+            saveEngine.deleteFoldersFormat(SaveEngine::TYPE);
         }
         if(ui->checkBoxSortExtension->isChecked())
         {
             example += "jpeg/";
+            saveEngine.setFoldersFormat(SaveEngine::EXT);
+        }
+        else
+        {
+            saveEngine.deleteFoldersFormat(SaveEngine::EXT);
         }
     }
     example += saveNameExample + ".jpg";
@@ -463,11 +490,14 @@ QString MainWindow::createSaveName(QDateTime dateTime)
     QString name;
     if(ui->checkBoxRename->isChecked())
     {
+        saveEngine.setSaveSettings(SaveEngine::RENAME);
+
         if(ui->radioButtonCustomName->isChecked())
         {
             name = ui->lineEditCustomName->text();
+            saveEngine.setRenameFormat(SaveEngine::CUSTOM_NAME, ui->comboBoxNumeric->currentText().size(), name, saveSplitter);
         }
-        else
+        else if(ui->radioButtonDateName->isChecked())
         {
             saveDateTimeFormat = "";
             if(ui->checkBoxYear->isChecked())
@@ -494,13 +524,23 @@ QString MainWindow::createSaveName(QDateTime dateTime)
                 if(ui->radioButtonHHMMSS->isChecked()) saveDateTimeFormat += "hhmmss";
                 saveDateTimeFormat += saveSplitter;
             }
+
+            saveEngine.setRenameFormat(SaveEngine::DATE_TIME, ui->comboBoxNumeric->currentText().size(), saveDateTimeFormat, saveSplitter);
             name = dateTime.toString(saveDateTimeFormat);
         }
-        name += saveSplitter + ui->comboBoxNumeric->currentText();
+        else
+        {
+            saveEngine.setRenameFormat(SaveEngine::ONLY_NUM, ui->comboBoxNumeric->currentText().size(), "", saveSplitter);
+        }
+        name += ui->comboBoxNumeric->currentText();
     }
-    else name = "fileName";
+    else
+    {
+        saveEngine.setRenameFormat(SaveEngine::AS_IS);
+        name = "fileName";
+    }
 
-    return name;
+    return saveEngine.exampleRenameFormat();
 }
 
 void MainWindow::on_checkBoxRename_stateChanged(int arg1)
@@ -518,9 +558,21 @@ void MainWindow::on_checkBoxRename_stateChanged(int arg1)
     ui->widgetRanameOther->setEnabled(arg1);
     ui->radioButtonDateName->setEnabled(arg1);
     ui->radioButtonCustomName->setEnabled(arg1);
+    ui->comboBoxSplitter->setEnabled(arg1);
+    ui->labelSplitter->setEnabled(arg1);
 
     ui->radioButtonCustomName->setChecked(true);
     ui->lineEditCustomName->setEnabled(arg1);
+    showExample();
+}
+
+void MainWindow::on_radioButtonOnlyNum_clicked()
+{
+    if(ui->radioButtonDateName->isChecked())
+    {
+        ui->widgetRenameFormat->setEnabled(false);
+        ui->lineEditCustomName->setEnabled(false);
+    }
     showExample();
 }
 
@@ -531,6 +583,7 @@ void MainWindow::on_radioButtonDateName_clicked()
         ui->widgetRenameFormat->setEnabled(true);
         ui->lineEditCustomName->setEnabled(false);
     }
+    showExample();
 }
 
 void MainWindow::on_radioButtonCustomName_clicked()
@@ -638,11 +691,14 @@ void MainWindow::on_checkBoxDate_stateChanged(int arg1)
 
 void MainWindow::on_pushButtonStartSave_clicked()
 {
+    QMessageBox::information(this, "", saveEngine.exampleFoldersFormat());
+
     if(savePath.isEmpty())
     {
         QMessageBox::information(this, "Save error", "No save path");
         return;
     }
-
 }
+
+
 

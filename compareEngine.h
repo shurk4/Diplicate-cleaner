@@ -31,14 +31,7 @@ class CompareEngine : public QObject
     QByteArray getHash(const QString filePath);
     bool fullCompare(QFileInfo fileInfo1, QFileInfo fileInfo2);
 
-public:    
-    enum Tolerance
-    {
-        MORE,
-        LESS,
-        EXACTLY
-    };
-
+public:
     CompareEngine();
 
     void setPath(const QString _path);
@@ -59,6 +52,12 @@ public:
     QString getDupName(int origId, int dupId);
     QFileInfo getDubFileInfo(int origId, int dupId);
 
+    enum Tolerance
+    {
+        MORE,
+        LESS,
+        EXACTLY
+    };
     QVector<int> getIdsWithDup(int dupNum, Tolerance value); // создаёт и возвращает список id файлов имеющийх большее, меньшее или равное(value) количество копий указанное в dupNum. Если у файла нет копий он будет равен dupNum 1;
     int getDeletedFilesNum();
 

@@ -12,7 +12,7 @@
 #include <QDateTime>
 
 #include "compareEngine.h"
-#include "qlistwidget.h"
+#include "saveEngine.h"
 
 enum TAB
 {
@@ -31,7 +31,8 @@ class MainWindow : public QMainWindow
     QVector<QVector<QFileInfo>> filesList;  // Список файлов с копиями
     QString sourcePath;
 
-    CompareEngine engine;
+    CompareEngine engine;    
+    SaveEngine saveEngine;
     QThread thread;
 
     QGraphicsScene *origScene;
@@ -158,6 +159,8 @@ private slots:
     void on_checkBoxDate_stateChanged(int arg1);
 
     void on_pushButtonStartSave_clicked();
+
+    void on_radioButtonOnlyNum_clicked();
 
 private:
     Ui::MainWindow *ui;
