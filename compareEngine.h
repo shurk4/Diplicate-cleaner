@@ -21,6 +21,9 @@ class CompareEngine : public QObject
 
     QVector<QVector<QFileInfo>> filesById; // Список файлов по ИД
 
+    qint64 scannedSize = 0;
+    qint64 originalsSize = 0;
+
     int scannedFilesNum = 0;
     int deletedFilesNum = 0;
 
@@ -43,6 +46,9 @@ public:
     // Оригиналом считается файл с индексом 0, дубликаты с индексом 1+
     int getOrigNum();
     int getDupNum(int origId);
+
+    qint64 getScannedSize();
+    qint64 getOriginalsSize();
 
     void startDeleteDuplicates();
 

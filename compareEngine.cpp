@@ -161,6 +161,16 @@ int CompareEngine::getDupNum(int origId)
     return filesById[origId].size();
 }
 
+qint64 CompareEngine::getScannedSize()
+{
+    return scannedSize;
+}
+
+qint64 CompareEngine::getOriginalsSize()
+{
+    return originalsSize;
+}
+
 QString CompareEngine::getOrigName(int id)
 {
     return filesById[id][0].fileName();
@@ -256,7 +266,16 @@ void CompareEngine::addFile(const QString filePath)
     if(filesIdByHash.contains(hash))
     {
         // Если такой хеш файла уже имеется, добавляем в ид списока файлов текущий файл
-        filesById[filesIdByHash[hash]].push_back(fileInfo);
+        // Если файл изменён раньше чем первый в списке, добавляем в начало списка
+        if(filesById[filesIdByHash[hash]][0].lastModified().toMSecsSinceEpoch() < fileInfo.lastModified().toMSecsSinceEpoch())
+        {
+            filesById[filesIdByHash[hash]].push_back(fileInfo);
+        }
+        else
+        {
+            filesById[filesIdByHash[hash]].push_front(fileInfo);
+        }
+        scannedSize += fileInfo.size();
     }
     else
     {
@@ -265,5 +284,6 @@ void CompareEngine::addFile(const QString filePath)
         tempFileList.push_back(fileInfo);
         filesById.push_back(tempFileList);
         filesIdByHash[hash] = filesById.size()-1;
+        originalsSize += fileInfo.size();
     }
 }

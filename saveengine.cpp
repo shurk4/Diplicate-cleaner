@@ -26,6 +26,11 @@ void SaveEngine::deleteFoldersFormat(FoldersFormats format)
     foldersFormat &= (~format);
 }
 
+void SaveEngine::resetFoldersFormat()
+{
+    foldersFormat = 0;
+}
+
 QString SaveEngine::exampleFoldersFormat()
 {
     QString result = "/";
@@ -37,7 +42,7 @@ QString SaveEngine::exampleFoldersFormat()
     return result;
 }
 
-void SaveEngine::setRenameFormat(RenameFormat format, int _counterSize, QString _renameStr, QString _splitter)
+void SaveEngine::setRenameFormat(RenameFormat format, int _counterSize, QString _splitter, QString _renameStr)
 {
     renameFormat = format;
     counterSize = _counterSize;

@@ -10,6 +10,7 @@
 #include <QThread>
 #include <QTabBar>
 #include <QDateTime>
+#include <QStorageInfo>
 
 #include "compareEngine.h"
 #include "saveEngine.h"
@@ -61,14 +62,12 @@ class MainWindow : public QMainWindow
     void clearDup();
     void clearCounters();
     void showFilesList();
+    QString getSizeString(qint64 bytes);
 
 
 //--Save
     QString savePath;
-    QString saveNameExample = "FileName";
-    QString saveNameFormat;
-    QString saveSplitter = " ";
-    QString saveDateTimeFormat;
+    QString saveSplitter = "";
 
     QString createSaveName(QDateTime dateTime = QDateTime::currentDateTime().toLocalTime());
     void showExample();

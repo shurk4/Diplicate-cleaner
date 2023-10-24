@@ -52,6 +52,7 @@ public:
     int foldersFormat = 0;
     void setFoldersFormat(FoldersFormats format);
     void deleteFoldersFormat(FoldersFormats format);
+    void resetFoldersFormat();
     QString exampleFoldersFormat();
 
     enum RenameFormat
@@ -65,7 +66,7 @@ public:
     QString renameStr; // Пользовательское имя или формат даты/времени
     QString renameSplitter;
     int counterSize;
-    void setRenameFormat(RenameFormat format, int _counterSize = 5, QString _renameStr = "", QString _splitter = "");
+    void setRenameFormat(RenameFormat format, int _counterSize = 5, QString _splitter = "", QString _renameStr = "");
     QString exampleRenameFormat();
 
 public slots:

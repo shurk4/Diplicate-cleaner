@@ -176,6 +176,36 @@ void MainWindow::showFilesList()
     }
 }
 
+QString MainWindow::getSizeString(qint64 bytes)
+{
+    QString unit = "b";
+    double size = bytes;
+
+    if(bytes >= 1000 && bytes < 1000000)
+    {
+        size = bytes / 1000.0;
+        unit = "Kb";
+    }
+    else if(bytes >= 1000000 && bytes < 1000000000)
+    {
+        size = bytes / 1000000.0;
+        unit = "Mb";
+    }
+    else if(bytes >= 1000000000 && bytes < 1000000000000)
+    {
+        size = bytes / 1000000000.0;
+        unit = "Gb";
+    }
+    else if(bytes >= 1000000000000)
+    {
+        size = bytes / 1000000000000.0;
+        unit = "Tb";
+    }
+
+    qDebug() << "Size = " << QString::number(size);
+    return QString::number(size, 'f', 3) + unit;
+}
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     ui->graphicsViewOrig->scene()->clear();
@@ -217,6 +247,21 @@ void MainWindow::openFolder(TAB tab)
             ui->labelSavePath->setText(path);
             savePath = path;
             ui->pushButtonStartSave->setEnabled(true);
+            qint64 bytes = QStorageInfo(path).bytesAvailable();
+            ui->widgetFreeSpace->show();
+            ui->labelAvailibleSpace->setText(getSizeString(bytes));
+            if(bytes < engine.getOriginalsSize())
+            {
+                ui->labelAvailibleSpace->setStyleSheet("QLabel {color : red; font : bold}");
+                QMessageBox::critical(this, "", "На указанном диске недостаточно места.\n"
+                                                "Если выбран исходный диск, сначала можно попробовать удалить дубликаты в режиме сравнения нажав кнопку \"Отмена\"");
+                ui->pushButtonStartSave->setDisabled(true);
+            }
+            else
+            {
+                ui->labelAvailibleSpace->setStyleSheet("QLabel {color : black;}");
+                ui->pushButtonStartSave->setEnabled(true);
+            }
             break;
         }
     }
@@ -285,6 +330,7 @@ void MainWindow::hideSaveWidgets()
     ui->widgetYearFormat->hide();
     ui->widgetMonthFormat->hide();
     ui->widgetTimeFormat->hide();
+    ui->widgetFreeSpace->hide();
 }
 
 void MainWindow::on_pushButtonRotateLeft_clicked()
@@ -372,6 +418,8 @@ void MainWindow::on_saveOrig_triggered()
 {
     ui->tabWidget->setCurrentIndex(1);
     ui->toolBarMain->hide();
+    ui->labelSizeToSave->setText(getSizeString(engine.getOriginalsSize()));
+    ui->labelSizeToSave->setToolTip(QString::number(engine.getOriginalsSize()) + " bytes");
     if(ui->saveOrig->isEnabled())
     {
         ui->statusBar->showMessage("Для настройки параметров сохранения выберите целевую директорию.");
@@ -388,6 +436,9 @@ void MainWindow::on_checkBoxSortDirs_stateChanged(int arg1)
         ui->checkBoxSortDates->setEnabled(arg1);
         ui->checkBoxSortMonths->setEnabled(arg1);
         ui->checkBoxSortYears->setEnabled(arg1);
+
+        saveEngine.resetFoldersFormat();
+        showExample();
 }
 
 void MainWindow::on_pushButtonCancelSave_clicked()
@@ -429,15 +480,12 @@ void MainWindow::on_checkBoxSortExtension_stateChanged(int arg1)
 // Показывает пример сохранения файла
 void MainWindow::showExample()
 {
-    QString example = "/";
-    saveNameExample = createSaveName();
     if(ui->checkBoxSortDirs->isChecked())
     {
         QDateTime dateTime;
         dateTime = QDateTime::currentDateTime().toLocalTime();
         if(ui->checkBoxSortYears->isChecked())
         {
-            example += dateTime.toString("yyyy") + "/";
             saveEngine.setFoldersFormat(SaveEngine::YEAR);
         }
         else
@@ -446,7 +494,6 @@ void MainWindow::showExample()
         }
         if(ui->checkBoxSortMonths->isChecked())
         {
-            example += dateTime.toString("MM") + "/";
             saveEngine.setFoldersFormat(SaveEngine::MONTH);
         }
         else
@@ -455,7 +502,6 @@ void MainWindow::showExample()
         }
         if(ui->checkBoxSortDates->isChecked())
         {
-            example += dateTime.toString("dd") + "/";
             saveEngine.setFoldersFormat(SaveEngine::DATE);
         }
         else
@@ -464,7 +510,6 @@ void MainWindow::showExample()
         }
         if(ui->checkBoxSortFileType->isChecked())
         {
-            example += "images/";
             saveEngine.setFoldersFormat(SaveEngine::TYPE);
         }
         else
@@ -473,7 +518,6 @@ void MainWindow::showExample()
         }
         if(ui->checkBoxSortExtension->isChecked())
         {
-            example += "jpeg/";
             saveEngine.setFoldersFormat(SaveEngine::EXT);
         }
         else
@@ -481,63 +525,58 @@ void MainWindow::showExample()
             saveEngine.deleteFoldersFormat(SaveEngine::EXT);
         }
     }
-    example += saveNameExample + ".jpg";
-    ui->labelExample->setText(example);
+    ui->labelExample->setText(saveEngine.exampleFoldersFormat() + createSaveName());
 }
 
 QString MainWindow::createSaveName(QDateTime dateTime)
 {
-    QString name;
+    QString dateTimeFormat;
     if(ui->checkBoxRename->isChecked())
     {
         saveEngine.setSaveSettings(SaveEngine::RENAME);
 
         if(ui->radioButtonCustomName->isChecked())
         {
-            name = ui->lineEditCustomName->text();
-            saveEngine.setRenameFormat(SaveEngine::CUSTOM_NAME, ui->comboBoxNumeric->currentText().size(), name, saveSplitter);
+            saveEngine.setRenameFormat(SaveEngine::CUSTOM_NAME, ui->comboBoxNumeric->currentText().size(), saveSplitter, ui->lineEditCustomName->text());
         }
         else if(ui->radioButtonDateName->isChecked())
         {
-            saveDateTimeFormat = "";
+            dateTimeFormat = "";
             if(ui->checkBoxYear->isChecked())
             {
-                if(ui->radioButtonYYYY->isChecked()) saveDateTimeFormat += "yyyy";
-                else saveDateTimeFormat += "yy";
-                saveDateTimeFormat += saveSplitter;
+                if(ui->radioButtonYYYY->isChecked()) dateTimeFormat += "yyyy";
+                else dateTimeFormat += "yy";
+                dateTimeFormat += saveSplitter;
             }
             if(ui->checkBoxMonth->isChecked())
             {
-                if(ui->radioButtonMMMM->isChecked()) saveDateTimeFormat += "MMMM";
-                else if(ui->radioButtonMMM->isChecked()) saveDateTimeFormat += "MMM";
-                else saveDateTimeFormat += "MM";
-                saveDateTimeFormat += saveSplitter;
+                if(ui->radioButtonMMMM->isChecked()) dateTimeFormat += "MMMM";
+                else if(ui->radioButtonMMM->isChecked()) dateTimeFormat += "MMM";
+                else dateTimeFormat += "MM";
+                dateTimeFormat += saveSplitter;
             }
             if(ui->checkBoxDate->isChecked())
             {
-                saveDateTimeFormat += "dd";
-                saveDateTimeFormat += saveSplitter;
+                dateTimeFormat += "dd";
+                dateTimeFormat += saveSplitter;
             }
             if(ui->checkBoxTime->isChecked())
             {
-                if(ui->radioButtonHHMM->isChecked()) saveDateTimeFormat += "hhmm";
-                if(ui->radioButtonHHMMSS->isChecked()) saveDateTimeFormat += "hhmmss";
-                saveDateTimeFormat += saveSplitter;
+                if(ui->radioButtonHHMM->isChecked()) dateTimeFormat += "hhmm";
+                if(ui->radioButtonHHMMSS->isChecked()) dateTimeFormat += "hhmmss";
+                dateTimeFormat += saveSplitter;
             }
 
-            saveEngine.setRenameFormat(SaveEngine::DATE_TIME, ui->comboBoxNumeric->currentText().size(), saveDateTimeFormat, saveSplitter);
-            name = dateTime.toString(saveDateTimeFormat);
+            saveEngine.setRenameFormat(SaveEngine::DATE_TIME, ui->comboBoxNumeric->currentText().size(), saveSplitter, dateTimeFormat);
         }
         else
         {
-            saveEngine.setRenameFormat(SaveEngine::ONLY_NUM, ui->comboBoxNumeric->currentText().size(), "", saveSplitter);
+            saveEngine.setRenameFormat(SaveEngine::ONLY_NUM, ui->comboBoxNumeric->currentText().size(), saveSplitter);
         }
-        name += ui->comboBoxNumeric->currentText();
     }
     else
     {
         saveEngine.setRenameFormat(SaveEngine::AS_IS);
-        name = "fileName";
     }
 
     return saveEngine.exampleRenameFormat();
@@ -545,11 +584,7 @@ QString MainWindow::createSaveName(QDateTime dateTime)
 
 void MainWindow::on_checkBoxRename_stateChanged(int arg1)
 {
-    if(arg1)
-    {
-        saveNameExample = createSaveName();
-    }
-    else
+    if(!arg1)
     {
         ui->widgetRenameFormat->setDisabled(true);
         ui->lineEditCustomName->setDisabled(true);
@@ -619,11 +654,11 @@ void MainWindow::on_comboBoxSplitter_activated(int index)
 {
     if(index == 0)
     {
-        saveSplitter = " ";
+        saveSplitter = "";
     }
     else if(index == 1)
     {
-        saveSplitter = "";
+        saveSplitter = " ";
     }
     else
     {
@@ -681,6 +716,7 @@ void MainWindow::on_radioButtonHHMM_clicked()
 
 void MainWindow::on_radioButtonHHMMSS_clicked()
 {
+    ui->radioButtonHHMMSS->setText(QDateTime::currentDateTime().toLocalTime().toString("hh:mm:ss"));
     showExample();
 }
 
