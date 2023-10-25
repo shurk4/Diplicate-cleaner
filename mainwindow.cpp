@@ -25,6 +25,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::runDelete, &engine, &CompareEngine::runDelete);
     connect(&engine, &CompareEngine::finishedDelete, this, &MainWindow::finishedDelete);
 
+    saveEngine.moveToThread(&saveThread);
+    connect(this, &MainWindow::startCopy, &saveEngine, &SaveEngine::startCopy);
+    connect(&saveEngine, &SaveEngine::copyFinished, this, &MainWindow::copyFinished);
+    connect(&saveEngine, &SaveEngine::progress, this, &MainWindow::progress);
+    connect(&saveEngine, &SaveEngine::error, this, &MainWindow::error);
+
     disableBasicActions();
     disableSaveActions();
 
@@ -61,6 +67,7 @@ void MainWindow::disableSaveActions()
     ui->lineEditCustomName->setDisabled(true);
     ui->comboBoxSplitter->setDisabled(true);
     ui->labelSplitter->setDisabled(true);
+    ui->progressBar->hide();
 }
 
 void MainWindow::clearAll()
@@ -73,7 +80,7 @@ void MainWindow::clearAll()
     ui->labelSavePath->clear();
 
     sourcePath.clear();
-    savePath.clear();
+//    savePath.clear();
 
     ui->saveOrig->setEnabled(false);
 
@@ -245,7 +252,8 @@ void MainWindow::openFolder(TAB tab)
             break;
         case SAVE:
             ui->labelSavePath->setText(path);
-            savePath = path;
+//            savePath = path;
+            saveEngine.setSavePath(path);
             ui->pushButtonStartSave->setEnabled(true);
             qint64 bytes = QStorageInfo(path).bytesAvailable();
             ui->widgetFreeSpace->show();
@@ -320,9 +328,25 @@ void MainWindow::finishedDelete()
     showFilesList();
 }
 
+void MainWindow::error(QString error)
+{
+    QMessageBox::critical(this, "Copy Error", error);
+}
+
+void MainWindow::progress(int percent)
+{
+    ui->progressBar->setValue(percent);
+}
+
+void MainWindow::copyFinished()
+{
+    QMessageBox::information(this, "Finished", "Все файлы скопированы");
+}
+
 void MainWindow::saveFiles()
 {
-
+    saveThread.start();
+    emit startCopy();
 }
 
 void MainWindow::hideSaveWidgets()
@@ -418,16 +442,13 @@ void MainWindow::on_saveOrig_triggered()
 {
     ui->tabWidget->setCurrentIndex(1);
     ui->toolBarMain->hide();
-    ui->labelSizeToSave->setText(getSizeString(engine.getOriginalsSize()));
+
+    saveEngine.setFilesList(engine.getOrigList());
+    ui->labelSizeToSave->setText(getSizeString(saveEngine.getSaveSize()));
     ui->labelSizeToSave->setToolTip(QString::number(engine.getOriginalsSize()) + " bytes");
-    if(ui->saveOrig->isEnabled())
-    {
-        ui->statusBar->showMessage("Для настройки параметров сохранения выберите целевую директорию.");
-    }
-    else
-    {
-        ui->statusBar->showMessage("Настройте параметры сохранения и нажмите \"Старт\".");
-    }
+    ui->labelSaveFilesNum->setText(QString::number(saveEngine.getSaveNum()));
+
+    ui->statusBar->showMessage("Настройте параметры сохранения и нажмите \"Старт\".");
 }
 void MainWindow::on_checkBoxSortDirs_stateChanged(int arg1)
 {
@@ -484,6 +505,8 @@ void MainWindow::showExample()
     {
         QDateTime dateTime;
         dateTime = QDateTime::currentDateTime().toLocalTime();
+        saveEngine.setSaveSettings(SaveEngine::SORT_BY_DIRS);
+
         if(ui->checkBoxSortYears->isChecked())
         {
             saveEngine.setFoldersFormat(SaveEngine::YEAR);
@@ -524,6 +547,10 @@ void MainWindow::showExample()
         {
             saveEngine.deleteFoldersFormat(SaveEngine::EXT);
         }
+    }
+    else
+    {
+        saveEngine.deleteSaveSettings(SaveEngine::SORT_BY_DIRS);
     }
     ui->labelExample->setText(saveEngine.exampleFoldersFormat() + createSaveName());
 }
@@ -566,6 +593,8 @@ QString MainWindow::createSaveName(QDateTime dateTime)
                 if(ui->radioButtonHHMMSS->isChecked()) dateTimeFormat += "hhmmss";
                 dateTimeFormat += saveSplitter;
             }
+
+            dateTimeFormat.chop(1);
 
             saveEngine.setRenameFormat(SaveEngine::DATE_TIME, ui->comboBoxNumeric->currentText().size(), saveSplitter, dateTimeFormat);
         }
@@ -727,14 +756,15 @@ void MainWindow::on_checkBoxDate_stateChanged(int arg1)
 
 void MainWindow::on_pushButtonStartSave_clicked()
 {
-    QMessageBox::information(this, "", saveEngine.exampleFoldersFormat());
-
-    if(savePath.isEmpty())
+    if(!saveEngine.ready())
     {
         QMessageBox::information(this, "Save error", "No save path");
         return;
     }
+
+    ui->pushButtonStartSave->setDisabled(true);
+    ui->progressBar->show();
+    ui->progressBar->setValue(0);
+    saveEngine.resetCounters();
+    startCopy();
 }
-
-
-

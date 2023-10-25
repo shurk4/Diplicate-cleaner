@@ -5,30 +5,36 @@
 #include <QWidget>
 #include <QDateTime>
 #include <QFileInfo>
+#include <QDir>
 #include <QThread>
 
 class SaveEngine : public QWidget
 {
     Q_OBJECT
 
-    QString savePath;
+    QString savePath = "";
 
-    int saveSize;
-    int remainingCopySize;
+    int saveSize = 0;
+    int copiedSize = 0;
 
     QVector<QFileInfo> filesList;
+    QMap<QString, int> counters;
     QString dateTimeFormat;
+
+    void prepareFolders();
+
 
 
 public:
     explicit SaveEngine(QWidget *parent = nullptr);
 
-//    void setSavePath(QString const path);
+    void setSavePath(QString const &path);
 //    QString getSavePath();
 
-//    int getSaveSize();
+    int getSaveNum();
+    int getSaveSize();
 
-//    void setFilesList(QVector<QFileInfo> const &_filesList);
+    void setFilesList(QVector<QFileInfo> const &_filesList);
 //    QVector<QFileInfo> getFilesList();
 
 //    void setdateTimeFormat();
@@ -69,13 +75,17 @@ public:
     void setRenameFormat(RenameFormat format, int _counterSize = 5, QString _splitter = "", QString _renameStr = "");
     QString exampleRenameFormat();
 
+    bool ready();
+    void resetCounters();
+
 public slots:
 //    void calcSaveSize();
-//    int getAvailableSize();
-//    void startCopy();
+    void startCopy();
 
 signals:
     void error(QString);
+    void progress(int);
+//    void calcSaveSizeReady();
     void copyFinished();
 
 };

@@ -191,6 +191,17 @@ QFileInfo CompareEngine::getDubFileInfo(int origId, int dupId)
     return filesById[origId][dupId];
 }
 
+QVector<QFileInfo> CompareEngine::getOrigList()
+{
+    QVector<QFileInfo> result;
+    result.reserve(filesById.size());
+    for(auto i : filesById)
+    {
+        result.push_back(i[0]);
+    }
+    return result;
+}
+
 QVector<int> CompareEngine::getIdsWithDup(int dupNum, Tolerance value)
 {
     QVector<int> result;

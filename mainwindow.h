@@ -32,9 +32,10 @@ class MainWindow : public QMainWindow
     QVector<QVector<QFileInfo>> filesList;  // Список файлов с копиями
     QString sourcePath;
 
-    CompareEngine engine;    
-    SaveEngine saveEngine;
+    CompareEngine engine;
     QThread thread;
+    SaveEngine saveEngine;
+    QThread saveThread;
 
     QGraphicsScene *origScene;
     QGraphicsScene *dupScene;
@@ -66,7 +67,6 @@ class MainWindow : public QMainWindow
 
 
 //--Save
-    QString savePath;
     QString saveSplitter = "";
 
     QString createSaveName(QDateTime dateTime = QDateTime::currentDateTime().toLocalTime());
@@ -83,16 +83,28 @@ public:
     ~MainWindow();
 
 signals:
+    //Basic
     void runCompare();
     void runFull();
     void runDelete();
 
+    //Save
+//    void calcSaveSize();
+    void startCopy();
+
 public slots:
-    void getAction(QString act);
+    //Basic
+    void getAction(QString act); // Log
 
     void finishedCompare();
     void finishedFull();
     void finishedDelete();
+
+    //Save
+    void error(QString error);
+    void progress(int percent);
+//    void calcSaveSizeReady();
+    void copyFinished();
 
 private slots:
     void on_listWidgetOrig_currentRowChanged(int currentRow);

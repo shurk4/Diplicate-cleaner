@@ -58,6 +58,8 @@ public:
     QString getDupName(int origId, int dupId);
     QFileInfo getDubFileInfo(int origId, int dupId);
 
+    QVector<QFileInfo> getOrigList();
+
     enum Tolerance
     {
         MORE,
