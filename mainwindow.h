@@ -123,7 +123,7 @@ private slots:
 
     void on_pushButtonCancelSave_clicked();
 
-    void on_pushButtonSaveFolder_clicked();
+    void on_toolButtonSaveFolder_clicked();
 
     void on_checkBoxRename_stateChanged(int arg1);
 

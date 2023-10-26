@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>601</width>
-    <height>515</height>
+    <height>542</height>
    </rect>
   </property>
   <property name="font">
@@ -41,7 +41,7 @@
        <bool>true</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="documentMode">
        <bool>true</bool>
@@ -145,7 +145,11 @@
                 </font>
                </property>
                <property name="text">
-                <string>↶</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resource.qrc">
+                 <normaloff>:/res/ico/rotateL.png</normaloff>:/res/ico/rotateL.png</iconset>
                </property>
               </widget>
              </item>
@@ -170,7 +174,11 @@
                 </font>
                </property>
                <property name="text">
-                <string>↷</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resource.qrc">
+                 <normaloff>:/res/ico/rotateR.png</normaloff>:/res/ico/rotateR.png</iconset>
                </property>
               </widget>
              </item>
@@ -844,18 +852,34 @@ box-shadow: 2, 5, #000;</string>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButtonSaveFolder">
+           <widget class="QToolButton" name="toolButtonSaveFolder">
             <property name="enabled">
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Выбрать</string>
+             <string>Сохранить в: </string>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/res/ico/openFolder.png</normaloff>:/res/ico/openFolder.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -1774,7 +1798,7 @@ box-shadow: 2, 5, #000;</string>
      <string>Главное</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="new_2"/>
+    <addaction name="openDir"/>
     <addaction name="separator"/>
     <addaction name="exit"/>
    </widget>
@@ -1782,7 +1806,6 @@ box-shadow: 2, 5, #000;</string>
     <property name="title">
      <string>Действия</string>
     </property>
-    <addaction name="openDir"/>
     <addaction name="analize"/>
     <addaction name="fullCompare"/>
    </widget>
@@ -1821,6 +1844,12 @@ box-shadow: 2, 5, #000;</string>
    <property name="movable">
     <bool>false</bool>
    </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>30</height>
+    </size>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -1834,14 +1863,27 @@ box-shadow: 2, 5, #000;</string>
    <addaction name="saveOrig"/>
   </widget>
   <action name="openDir">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/openFolder.png</normaloff>:/res/ico/openFolder.png</iconset>
+   </property>
    <property name="text">
     <string>Выбрать директорию</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
   <action name="analize">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/analyze.png</normaloff>:/res/ico/analyze.png</iconset>
+   </property>
    <property name="text">
     <string>Анализировать</string>
    </property>
@@ -1850,6 +1892,10 @@ box-shadow: 2, 5, #000;</string>
    </property>
   </action>
   <action name="fullCompare">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/fullCompare.png</normaloff>:/res/ico/fullCompare.png</iconset>
+   </property>
    <property name="text">
     <string>Полное сравнение</string>
    </property>
@@ -1858,6 +1904,10 @@ box-shadow: 2, 5, #000;</string>
    </property>
   </action>
   <action name="dupDelete">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/dupDelete.png</normaloff>:/res/ico/dupDelete.png</iconset>
+   </property>
    <property name="text">
     <string>Удалить дубликаты</string>
    </property>
@@ -1866,6 +1916,10 @@ box-shadow: 2, 5, #000;</string>
    </property>
   </action>
   <action name="saveOrig">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/saveOrig.png</normaloff>:/res/ico/saveOrig.png</iconset>
+   </property>
    <property name="text">
     <string>Сохранить оригиналы</string>
    </property>
@@ -1880,6 +1934,10 @@ box-shadow: 2, 5, #000;</string>
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/log.png</normaloff>:/res/ico/log.png</iconset>
+   </property>
    <property name="text">
     <string>Показать лог</string>
    </property>
@@ -1888,6 +1946,10 @@ box-shadow: 2, 5, #000;</string>
    </property>
   </action>
   <action name="exit">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/exit.png</normaloff>:/res/ico/exit.png</iconset>
+   </property>
    <property name="text">
     <string>Выход</string>
    </property>
@@ -1895,15 +1957,11 @@ box-shadow: 2, 5, #000;</string>
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="new_2">
-   <property name="text">
-    <string>Новый поиск</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-  </action>
   <action name="help">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/help.png</normaloff>:/res/ico/help.png</iconset>
+   </property>
    <property name="text">
     <string>Помощь</string>
    </property>
@@ -1912,6 +1970,10 @@ box-shadow: 2, 5, #000;</string>
    </property>
   </action>
   <action name="about">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/about.png</normaloff>:/res/ico/about.png</iconset>
+   </property>
    <property name="text">
     <string>О программе</string>
    </property>
@@ -1923,6 +1985,10 @@ box-shadow: 2, 5, #000;</string>
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/ico/preview.png</normaloff>:/res/ico/preview.png</iconset>
+   </property>
    <property name="text">
     <string>Предпросмотр</string>
    </property>
@@ -1931,7 +1997,9 @@ box-shadow: 2, 5, #000;</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup"/>

@@ -11,12 +11,12 @@ void SaveEngine::setSavePath(const QString &path)
     savePath = path;
 }
 
-int SaveEngine::getSaveNum()
+qint64 SaveEngine::getSaveNum()
 {
     return filesList.size();
 }
 
-int SaveEngine::getSaveSize()
+qint64 SaveEngine::getSaveSize()
 {
     return saveSize;
 }
@@ -24,6 +24,7 @@ int SaveEngine::getSaveSize()
 void SaveEngine::setFilesList(const QVector<QFileInfo> &_filesList)
 {
     filesList = _filesList;
+    saveSize = 0;
     for(const auto &i : filesList)
     {
         saveSize += i.size();
@@ -116,7 +117,7 @@ void SaveEngine::startCopy()
         emit error("Нечего копировать!");
     }
 
-    int percentSize = saveSize / 100;
+    qint64 percentSize = saveSize / 100;
 
     for(const auto &i : filesList)
     {
@@ -210,7 +211,9 @@ void SaveEngine::startCopy()
         }
 
         if(!fileToSave.copy(fullFilePath)) emit error("Не сохранён");
+//        QThread::currentThread()->sleep(1);
         copiedSize += i.size();
         emit progress(copiedSize / percentSize);
     }
+    emit copyFinished();
 }

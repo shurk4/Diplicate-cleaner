@@ -226,6 +226,7 @@ void MainWindow::getAction(QString act)
 {
     ui->textBrowserLog->append(act);
     ui->statusBar->showMessage(act);
+    ui->labelFilesNum->setText(QString::number(engine.getScannedFilesNum()));
 }
 
 void MainWindow::showImage(const QString &path, QGraphicsView *view, QGraphicsScene *scene)
@@ -296,6 +297,7 @@ void MainWindow::finishedCompare()
     ui->statusBar->showMessage("Анализ выбранной директории закончен");
     ui->fullCompare->setEnabled(true);
     ui->saveOrig->setEnabled(true);
+    ui->openDir->setEnabled(true);
     showFilesList();
 }
 
@@ -340,6 +342,7 @@ void MainWindow::progress(int percent)
 
 void MainWindow::copyFinished()
 {
+    ui->pushButtonStartSave->setEnabled(true);
     QMessageBox::information(this, "Finished", "Все файлы скопированы");
 }
 
@@ -377,6 +380,7 @@ void MainWindow::on_openDir_triggered()
 void MainWindow::on_analize_triggered()
 {
     analyze();
+    ui->openDir->setDisabled(true);
 }
 
 void MainWindow::on_fullCompare_triggered()
@@ -469,7 +473,7 @@ void MainWindow::on_pushButtonCancelSave_clicked()
     ui->statusBar->clearMessage();
 }
 
-void MainWindow::on_pushButtonSaveFolder_clicked()
+void MainWindow::on_toolButtonSaveFolder_clicked()
 {
     openFolder(SAVE);
 }

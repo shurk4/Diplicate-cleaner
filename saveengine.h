@@ -14,8 +14,8 @@ class SaveEngine : public QWidget
 
     QString savePath = "";
 
-    int saveSize = 0;
-    int copiedSize = 0;
+    qint64 saveSize = 0;
+    qint64 copiedSize = 0;
 
     QVector<QFileInfo> filesList;
     QMap<QString, int> counters;
@@ -31,8 +31,8 @@ public:
     void setSavePath(QString const &path);
 //    QString getSavePath();
 
-    int getSaveNum();
-    int getSaveSize();
+    qint64 getSaveNum();
+    qint64 getSaveSize();
 
     void setFilesList(QVector<QFileInfo> const &_filesList);
 //    QVector<QFileInfo> getFilesList();
