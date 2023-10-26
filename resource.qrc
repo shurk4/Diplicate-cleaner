@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>ico/openFolder.png</file>
+        <file>ico/analyze.png</file>
+        <file>ico/fullCompare.png</file>
+        <file>ico/dupDelete.png</file>
+        <file>ico/saveOrig.png</file>
+        <file>ico/rotateL.png</file>
+        <file>ico/rotateR.png</file>
+        <file>ico/about.png</file>
+        <file>ico/exit.png</file>
+        <file>ico/help.png</file>
+        <file>ico/log.png</file>
+        <file>ico/preview.png</file>
+    </qresource>
+</RCC>
