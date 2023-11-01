@@ -29,6 +29,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 //--Basic
+    qint64 startCompareTime;
+
     QVector<QVector<QFileInfo>> filesList;  // Список файлов с копиями
     QString sourcePath;
 
@@ -109,69 +111,46 @@ public slots:
 private slots:
     void on_listWidgetOrig_currentRowChanged(int currentRow);
     void on_listWidgetDup_currentRowChanged(int currentRow);
-    void on_pushButtonRotateLeft_clicked();
-    void on_pushButtonRotateRight_clicked();
 
+    void on_checkBoxSortDirs_stateChanged(int arg1);
+    void on_pushButtonCancelSave_clicked();
+    void on_toolButtonSaveFolder_clicked();
+    void on_checkBoxRename_stateChanged(int arg1);
+    void on_checkBoxSortDates_stateChanged(int arg1);
+    void on_checkBoxSortYears_stateChanged(int arg1);
+    void on_checkBoxSortMonths_stateChanged(int arg1);
+    void on_checkBoxSortFileType_stateChanged(int arg1);
+    void on_checkBoxSortExtension_stateChanged(int arg1);
+    void on_radioButtonDateName_clicked();
+    void on_radioButtonCustomName_clicked();
+    void on_checkBoxYear_stateChanged(int arg1);
+    void on_lineEditCustomName_textEdited(const QString &arg1);
+    void on_comboBoxSplitter_activated(int index);
+    void on_comboBoxNumeric_activated(int index);
+    void on_checkBoxMonth_stateChanged(int arg1);
+    void on_checkBoxTime_stateChanged(int arg1);
+    void on_radioButtonYYYY_clicked();
+    void on_radioButtonYY_clicked();
+    void on_radioButtonMM_clicked();
+    void on_radioButtonMMM_clicked();
+    void on_radioButtonMMMM_clicked();
+    void on_radioButtonHHMM_clicked();
+    void on_radioButtonHHMMSS_clicked();
+    void on_checkBoxDate_stateChanged(int arg1);
+    void on_pushButtonStartSave_clicked();
+    void on_radioButtonOnlyNum_clicked();
+
+    // QAction
     void on_openDir_triggered();
     void on_analize_triggered();
     void on_fullCompare_triggered();
     void on_dupDelete_triggered();
     void on_showLog_triggered(bool checked);
     void on_saveOrig_triggered();
+    void on_rotateLeft_triggered();
+    void on_rotateRight_triggered();
 
-    void on_checkBoxSortDirs_stateChanged(int arg1);
-
-    void on_pushButtonCancelSave_clicked();
-
-    void on_toolButtonSaveFolder_clicked();
-
-    void on_checkBoxRename_stateChanged(int arg1);
-
-    void on_checkBoxSortDates_stateChanged(int arg1);
-
-    void on_checkBoxSortYears_stateChanged(int arg1);
-
-    void on_checkBoxSortMonths_stateChanged(int arg1);
-
-    void on_checkBoxSortFileType_stateChanged(int arg1);
-
-    void on_checkBoxSortExtension_stateChanged(int arg1);
-
-    void on_radioButtonDateName_clicked();
-
-    void on_radioButtonCustomName_clicked();
-
-    void on_checkBoxYear_stateChanged(int arg1);
-
-    void on_lineEditCustomName_textEdited(const QString &arg1);
-
-    void on_comboBoxSplitter_activated(int index);
-
-    void on_comboBoxNumeric_activated(int index);
-
-    void on_checkBoxMonth_stateChanged(int arg1);
-
-    void on_checkBoxTime_stateChanged(int arg1);
-
-    void on_radioButtonYYYY_clicked();
-
-    void on_radioButtonYY_clicked();
-
-    void on_radioButtonMM_clicked();
-
-    void on_radioButtonMMM_clicked();
-
-    void on_radioButtonMMMM_clicked();
-
-    void on_radioButtonHHMM_clicked();
-
-    void on_radioButtonHHMMSS_clicked();
-
-    void on_checkBoxDate_stateChanged(int arg1);
-
-    void on_pushButtonStartSave_clicked();
-
-    void on_radioButtonOnlyNum_clicked();
+    void on_Multithread_triggered(bool checked);
 
 private:
     Ui::MainWindow *ui;

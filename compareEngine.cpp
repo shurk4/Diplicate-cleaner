@@ -5,6 +5,11 @@ CompareEngine::CompareEngine()
 
 }
 
+void CompareEngine::setMultiThread(const bool arg)
+{
+    multiThread = arg;
+}
+
 void CompareEngine::setPath(const QString _path)
 {
     path = _path;
@@ -45,6 +50,19 @@ void CompareEngine::runDelete()
 {
     startDeleteDuplicates();
     emit finishedDelete();
+}
+
+void CompareEngine::info(QString type, qint64 size)
+{
+    if(type == "orig")
+    {
+
+        originalsSize += size;
+    }
+    else if(type == "scan")
+    {
+        scannedSize += size;
+    }
 }
 
 QByteArray CompareEngine::getHash(const QString filePath)
@@ -264,9 +282,17 @@ void CompareEngine::listFiles(const QString _path)
     {
         QString currentFile = _path + splitter + i;
         log("   File: " + currentFile);
-        addFile(currentFile);
+
+        if(multiThread)
+        {
+            HashComparer *addFileThread = new HashComparer(currentFile, &mutex, &filesIdByHash, &filesById);
+            addFileThread->setAutoDelete(true);
+            QThreadPool::globalInstance()->start(addFileThread);
+        }
+        else addFile(currentFile);
         scannedFilesNum++;
     }
+    QThreadPool::globalInstance()->waitForDone();
 }
 
 void CompareEngine::addFile(const QString filePath)
@@ -297,4 +323,56 @@ void CompareEngine::addFile(const QString filePath)
         filesIdByHash[hash] = filesById.size()-1;
         originalsSize += fileInfo.size();
     }
+}
+
+HashComparer::HashComparer(const QString _filePath, QMutex *_mutex, QMap<QByteArray, int> *_filesIdByHash, QVector<QVector<QFileInfo> > *_filesById)
+    : filePath(_filePath), mutex(_mutex), filesIdByHash(_filesIdByHash), filesById(_filesById)
+{
+
+}
+
+QByteArray HashComparer::getHash()
+{
+    QFile file(filePath);
+    if(file.open(QFile::ReadOnly))
+    {
+        QCryptographicHash hash(QCryptographicHash::Sha1);
+        while(!file.atEnd()){
+            hash.addData(file.read(8192));
+        }
+        return hash.result();
+    }
+    return QByteArray();
+}
+
+void HashComparer::run()
+{
+    QByteArray hash = getHash(); // Получаем хеш файла
+    QFileInfo fileInfo(filePath); // получаем информацию о файле
+
+    mutex->lock();
+    if(filesIdByHash->contains(hash))
+    {
+        // Если такой хеш файла уже имеется, добавляем в ид списока файлов текущий файл
+        // Если файл изменён раньше чем первый в списке, добавляем в начало списка
+        if((*filesById)[filesIdByHash->value(hash)][0].lastModified().toMSecsSinceEpoch() < fileInfo.lastModified().toMSecsSinceEpoch())
+        {
+            (*filesById)[filesIdByHash->value(hash)].push_back(fileInfo);
+        }
+        else
+        {
+            (*filesById)[filesIdByHash->value(hash)].push_front(fileInfo);
+        }
+        emit info("scan", fileInfo.size());
+    }
+    else
+    {
+        // Иначе добавляем новый ид в список файлов
+        QVector<QFileInfo> tempFileList;
+        tempFileList.push_back(fileInfo);
+        filesById->push_back(tempFileList);
+        filesIdByHash->insert(hash, filesById->size()-1);
+        emit info("orig", fileInfo.size());
+    }
+    mutex->unlock();
 }

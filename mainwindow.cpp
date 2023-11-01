@@ -286,6 +286,8 @@ void MainWindow::analyze()
         return;
     }
 
+    startCompareTime = QDateTime::currentMSecsSinceEpoch();
+    QMessageBox::information(this, "", "startCompareTime = " + QString::number(startCompareTime));
     thread.start();
     emit runCompare();
     ui->analize->setEnabled(false);
@@ -294,6 +296,11 @@ void MainWindow::analyze()
 void MainWindow::finishedCompare()
 {
     thread.terminate();
+    QTime workTime;
+    workTime = QTime::fromMSecsSinceStartOfDay(QDateTime::currentMSecsSinceEpoch() - startCompareTime);
+    QMessageBox::information(this, "", "WorkTime = " + QString::number(QDateTime::currentMSecsSinceEpoch() - startCompareTime));
+    QMessageBox::information(this, "", "WorkTime Time = " + workTime.toString());
+    ui->labelWorkTime->setText(workTime.toString());
     ui->statusBar->showMessage("Анализ выбранной директории закончен");
     ui->fullCompare->setEnabled(true);
     ui->saveOrig->setEnabled(true);
@@ -358,18 +365,6 @@ void MainWindow::hideSaveWidgets()
     ui->widgetMonthFormat->hide();
     ui->widgetTimeFormat->hide();
     ui->widgetFreeSpace->hide();
-}
-
-void MainWindow::on_pushButtonRotateLeft_clicked()
-{
-    ui->graphicsViewOrig->rotate(-90);
-    ui->graphicsViewDup->rotate(-90);
-}
-
-void MainWindow::on_pushButtonRotateRight_clicked()
-{
-    ui->graphicsViewOrig->rotate(90);
-    ui->graphicsViewDup->rotate(90);
 }
 
 void MainWindow::on_openDir_triggered()
@@ -772,3 +767,24 @@ void MainWindow::on_pushButtonStartSave_clicked()
     saveEngine.resetCounters();
     startCopy();
 }
+
+void MainWindow::on_rotateLeft_triggered()
+{
+    ui->graphicsViewOrig->rotate(-90);
+    ui->graphicsViewDup->rotate(-90);
+}
+
+
+void MainWindow::on_rotateRight_triggered()
+{
+    ui->graphicsViewOrig->rotate(90);
+    ui->graphicsViewDup->rotate(90);
+}
+void MainWindow::on_Multithread_triggered(bool checked)
+{
+    engine.setMultiThread(checked);
+
+    if(checked) QMessageBox::information(this, "Внимание", "Данный параметр рекомендуется включать только для быстрых дисков NVME\n"
+                                                           "В других случаях прирост производительности может быть незаметен или может быть отрицательным.");
+}
+

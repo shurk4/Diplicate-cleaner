@@ -31,6 +31,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(DuplicateCleaner
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        mainmaster.h mainmaster.cpp mainmaster.ui
     )
 else()
     add_executable(DuplicateCleaner
